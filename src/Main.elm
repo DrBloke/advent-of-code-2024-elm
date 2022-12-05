@@ -11,19 +11,20 @@ import RockPaperScissors exposing (rockPaperScissors)
 
 
 main =
-  Browser.sandbox { init = init, update = update, view = view }
+    Browser.sandbox { init = init, update = update, view = view }
 
 
 
 -- MODEL
 
 
-type Model = RockPaperScissorsView
+type Model
+    = RockPaperScissorsView
 
 
 init : Model
 init =
-  RockPaperScissorsView
+    RockPaperScissorsView
 
 
 
@@ -31,14 +32,14 @@ init =
 
 
 type Msg
-  = RockPaperScissors
+    = RockPaperScissors
 
 
 update : Msg -> Model -> Model
 update msg model =
-  case msg of
-    RockPaperScissors ->
-        RockPaperScissorsView
+    case msg of
+        RockPaperScissors ->
+            RockPaperScissorsView
 
 
 
@@ -47,6 +48,6 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-  case model of
-    RockPaperScissorsView ->
-        Html.map (\_ -> RockPaperScissors) rockPaperScissors
+    case model of
+        RockPaperScissorsView ->
+            Html.map (\_ -> RockPaperScissors) rockPaperScissors
