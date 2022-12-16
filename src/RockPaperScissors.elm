@@ -1,12 +1,11 @@
 module RockPaperScissors exposing (rockPaperScissors)
 
 import Html exposing (Html, button, div, text)
-import Parser exposing (Parser, (|.), (|=), succeed, symbol, float, spaces, map, oneOf, keyword)
+import Parser exposing ((|.), (|=), Parser, Step(..), end, float, keyword, loop, map, oneOf, spaces, succeed, symbol)
 
 
 testString =
-    """
-A Y
+    """A Y
 B X
 C Z
 """
@@ -23,7 +22,7 @@ type Round
 
 
 type ScoredRound
-    = ScoredRound Round
+    = ScoredRound Play Play Int
 
 
 type alias Game =
@@ -43,48 +42,128 @@ type MeCodedPlay
     | Y
     | Z
 
-output =Parser.run parseRound "A X"
 
-playToString: Play -> String
+output =
+    Parser.run parseTotalScore testString
+
+
+playToString : Play -> String
 playToString play =
-  case play of 
-    Rock -> "R"
-    Paper -> "P"
-    Scissors -> "S"
+    case play of
+        Rock ->
+            "R"
 
-parseRound: Parser Round
-parseRound =
-  Parser.succeed Round
-      |= parseElf 
-      |. spaces
-      |= parseMe 
+        Paper ->
+            "P"
 
-parseElf: Parser Play
+        Scissors ->
+            "S"
+
+
+parseTotalScore : Parser Int
+parseTotalScore =
+    loop 0 scoreHelper
+
+
+scoreHelper : Int -> Parser (Step Int Int)
+scoreHelper totalScore =
+    let
+        _ =
+            Debug.log "totalScore" totalScore
+    in
+    oneOf
+        [ succeed (\score -> Loop (score + totalScore))
+            |= map (\(ScoredRound _ _ s) -> s) parseScoredRound
+            |. spaces
+        , succeed ()
+            |> map (\_ -> Done totalScore)
+        ]
+
+
+parseScoredRound : Parser ScoredRound
+parseScoredRound =
+    Parser.succeed
+        (\elf me ->
+            let
+                choiceScore =
+                    case me of
+                        Rock ->
+                            1
+
+                        Paper ->
+                            2
+
+                        Scissors ->
+                            3
+
+                resultScore =
+                    if
+                        (elf == Rock && me == Paper)
+                            || (elf == Paper && me == Scissors)
+                            || (elf == Scissors && me == Rock)
+                    then
+                        6
+
+                    else if
+                        (elf == Rock && me == Rock)
+                            || (elf == Paper && me == Paper)
+                            || (elf == Scissors && me == Scissors)
+                    then
+                        3
+
+                    else if
+                        (elf == Paper && me == Rock)
+                            || (elf == Scissors && me == Paper)
+                            || (elf == Rock && me == Scissors)
+                    then
+                        0
+
+                    else
+                        {- shouldn't reach here. Could use nested case statementto ensure everything is being considered,
+                        but it's not as succinct -}
+                        
+                        -1
+            in
+            ScoredRound elf me (choiceScore + resultScore) |> Debug.log "scoring"
+        )
+        |= parseElf
+        |. spaces
+        |= parseMe
+        |. spaces
+
+
+parseElf : Parser Play
 parseElf =
-  oneOf
-    [ map (\_ -> Rock ) (symbol "A")
-    , map (\_ -> Paper ) (symbol "B")
-    , map (\_ -> Scissors ) (symbol "C")
-    ]
+    oneOf
+        [ map (\_ -> Rock) (symbol "A")
+        , map (\_ -> Paper) (symbol "B")
+        , map (\_ -> Scissors) (symbol "C")
+        ]
 
-parseMe: Parser Play
+
+parseMe : Parser Play
 parseMe =
-  oneOf
-    [ map (\_ -> Rock ) (symbol "X")
-    , map (\_ -> Paper ) (symbol "Y")
-    , map (\_ -> Scissors ) (symbol "Z")
-    ]
+    oneOf
+        [ map (\_ -> Rock) (symbol "X")
+        , map (\_ -> Paper) (symbol "Y")
+        , map (\_ -> Scissors) (symbol "Z")
+        ]
 
 
 rockPaperScissors : Html ()
 rockPaperScissors =
-  case output of
-    Ok (Round elf me) ->
-      div [] [ text (playToString elf ++ " " ++ playToString me ) ]
-    Err error ->
-      div [] [ text (deadEndsToString error)]
+    case output of
+        Ok score ->
+            div [] [ text <| String.fromInt score ]
+
+        Err error ->
+            div [] [ text (deadEndsToString error) ]
+
+
 
 ---------------
+
+
 deadEndsToString : List Parser.DeadEnd -> String
 deadEndsToString deadEnds =
     let
@@ -124,7 +203,7 @@ deadEndsToString deadEnds =
                     "ExpectingSymbol " ++ str ++ " at " ++ position
 
                 Parser.ExpectingKeyword str ->
-                    "ExpectingKeyword " ++ str ++ "at " ++ position
+                    "ExpectingKeyword " ++ str ++ " at " ++ position
 
                 Parser.ExpectingEnd ->
                     "ExpectingEnd at " ++ position
