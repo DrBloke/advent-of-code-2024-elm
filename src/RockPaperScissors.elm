@@ -1,11 +1,13 @@
 module RockPaperScissors exposing (rockPaperScissors)
 
+import Helper.ParserExtra exposing (deadEndsToString)
 import Html exposing (Html, button, div, text)
 import Parser exposing ((|.), (|=), Parser, Step(..), end, float, keyword, loop, map, oneOf, spaces, succeed, symbol)
 
 
 testString =
-    """A Y
+    """
+A Y
 B X
 C Z
 """
@@ -120,16 +122,16 @@ parseScoredRound =
 
                     else
                         {- shouldn't reach here. Could use nested case statementto ensure everything is being considered,
-                        but it's not as succinct -}
-                        
+                           but it's not as succinct
+                        -}
                         -1
             in
             ScoredRound elf me (choiceScore + resultScore) |> Debug.log "scoring"
         )
+        |. spaces
         |= parseElf
         |. spaces
         |= parseMe
-        |. spaces
 
 
 parseElf : Parser Play
@@ -158,63 +160,3 @@ rockPaperScissors =
 
         Err error ->
             div [] [ text (deadEndsToString error) ]
-
-
-
----------------
-
-
-deadEndsToString : List Parser.DeadEnd -> String
-deadEndsToString deadEnds =
-    let
-        deadEndToString : Parser.DeadEnd -> String
-        deadEndToString deadEnd =
-            let
-                position : String
-                position =
-                    "row:" ++ String.fromInt deadEnd.row ++ " col:" ++ String.fromInt deadEnd.col ++ "\n"
-            in
-            case deadEnd.problem of
-                Parser.Expecting str ->
-                    "Expecting " ++ str ++ "at " ++ position
-
-                Parser.ExpectingInt ->
-                    "ExpectingInt at " ++ position
-
-                Parser.ExpectingHex ->
-                    "ExpectingHex at " ++ position
-
-                Parser.ExpectingOctal ->
-                    "ExpectingOctal at " ++ position
-
-                Parser.ExpectingBinary ->
-                    "ExpectingBinary at " ++ position
-
-                Parser.ExpectingFloat ->
-                    "ExpectingFloat at " ++ position
-
-                Parser.ExpectingNumber ->
-                    "ExpectingNumber at " ++ position
-
-                Parser.ExpectingVariable ->
-                    "ExpectingVariable at " ++ position
-
-                Parser.ExpectingSymbol str ->
-                    "ExpectingSymbol " ++ str ++ " at " ++ position
-
-                Parser.ExpectingKeyword str ->
-                    "ExpectingKeyword " ++ str ++ " at " ++ position
-
-                Parser.ExpectingEnd ->
-                    "ExpectingEnd at " ++ position
-
-                Parser.UnexpectedChar ->
-                    "UnexpectedChar at " ++ position
-
-                Parser.Problem str ->
-                    "ProblemString " ++ str ++ " at " ++ position
-
-                Parser.BadRepeat ->
-                    "BadRepeat at " ++ position
-    in
-    List.foldl (++) "" (List.map deadEndToString deadEnds)
