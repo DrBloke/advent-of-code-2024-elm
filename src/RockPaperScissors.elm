@@ -28,7 +28,7 @@ config =
         , converter = identity
         , render = render
         , defaultInput = defaultData
-        , inputLabel = "Enter the input data (Rows of A|B|C space X|Y|Z)"
+        , inputLabel = "Enter the input data (Rows of A|B|C space X|Y|Z):"
         , identifier = "rock-paper-scissors"
         }
 
@@ -140,8 +140,8 @@ parseScoredRound =
                         0
 
                     else
-                        {- shouldn't reach here. Could use nested case statementto ensure everything is being considered,
-                           but it's not as succinct
+                        {- shouldn't reach here. Could use nested case statement to ensure everything is being considered,
+                           but it's not as succinct. Could improve this with sorting function.
                         -}
                         -1
             in

@@ -11,11 +11,13 @@
 /* a {
   color: #60b5cc;
 } */
+.field {
+  margin-bottom: 20px;
+}
 
 label,
 textarea {
   font-size: 1rem;
-  margin-bottom: 10px;
   display: block;
 }
 
@@ -29,7 +31,9 @@ textarea {
   box-shadow: 1px 1px 1px #999;
 }
 
-label {}
+label {
+  margin-bottom: 10px;
+}
 
 textarea.invalid {
   border-color: #900;
@@ -38,4 +42,14 @@ textarea.invalid {
 
 textarea:focus:invalid {
   outline: none;
+}
+
+.error {
+  max-width: 290px;
+  padding: 0.3em;
+  font-size: 80%;
+  color: white;
+  background-color: #900;
+  border-radius: 0 0 5px 5px;
+  box-sizing: border-box;
 }
