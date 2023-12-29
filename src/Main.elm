@@ -1,9 +1,12 @@
 module Main exposing (main)
 
 import Browser
+import Helper.ParserExtra exposing (deadEndsToString)
 import Html exposing (Html, button, div, text)
 import Html.Events exposing (onClick)
-import RockPaperScissors exposing (rockPaperScissors)
+import Parser
+import RockPaperScissors
+import Types exposing (Config(..))
 
 
 
@@ -19,35 +22,44 @@ main =
 
 
 type Model
-    = RockPaperScissorsView
+    = RockPaperScissors
 
 
 init : Model
 init =
-    RockPaperScissorsView
+    RockPaperScissors
 
 
 
 -- UPDATE
 
 
-type Msg
-    = RockPaperScissors
+type alias Msg =
+    ()
 
 
 update : Msg -> Model -> Model
-update msg model =
-    case msg of
+update _ model =
+    case model of
         RockPaperScissors ->
-            RockPaperScissorsView
+            RockPaperScissors
 
 
 
 -- VIEW
 
 
-view : Model -> Html Msg
+view : Model -> Html ()
 view model =
-    case model of
-        RockPaperScissorsView ->
-            Html.map (\_ -> RockPaperScissors) rockPaperScissors
+    let
+        config =
+            case model of
+                RockPaperScissors ->
+                    RockPaperScissors.config |> Types.fromConfig
+    in
+    case Parser.run config.parser config.defaultInput of
+        Ok parserOutput ->
+            config.render parserOutput
+
+        Err error ->
+            div [] [ text (deadEndsToString error) ]

@@ -1,8 +1,34 @@
-module RockPaperScissors exposing (rockPaperScissors)
+module RockPaperScissors exposing (config, rockPaperScissors)
 
 import Helper.ParserExtra exposing (deadEndsToString)
-import Html exposing (Html, button, div, text)
-import Parser exposing ((|.), (|=), Parser, Step(..), end, float, keyword, loop, map, oneOf, spaces, succeed, symbol)
+import Html exposing (Html, div, text)
+import Parser
+    exposing
+        ( (|.)
+        , (|=)
+        , Parser
+        , Step(..)
+        , end
+        , float
+        , keyword
+        , loop
+        , map
+        , oneOf
+        , spaces
+        , succeed
+        , symbol
+        )
+import Types exposing (Config(..))
+
+
+config : Config Int Int
+config =
+    Config
+        { parser = parseTotalScore
+        , converter = identity
+        , render = render
+        , defaultInput = testString
+        }
 
 
 testString =
@@ -45,7 +71,7 @@ type MeCodedPlay
     | Z
 
 
-output =
+outputOld =
     Parser.run parseTotalScore testString
 
 
@@ -154,9 +180,14 @@ parseMe =
 
 rockPaperScissors : Html ()
 rockPaperScissors =
-    case output of
+    case outputOld of
         Ok score ->
             div [] [ text <| String.fromInt score ]
 
         Err error ->
             div [] [ text (deadEndsToString error) ]
+
+
+render : Int -> Html ()
+render output =
+    div [] [ text <| String.fromInt output ]
