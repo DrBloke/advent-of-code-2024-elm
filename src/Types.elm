@@ -10,6 +10,8 @@ type Config a b
         , converter : a -> b
         , render : b -> Html ()
         , defaultInput : String
+        , inputLabel : String
+        , identifier : String
         }
 
 
@@ -20,6 +22,8 @@ fromConfig :
         , converter : a -> b
         , render : b -> Html ()
         , defaultInput : String
+        , inputLabel : String
+        , identifier : String
         }
 fromConfig (Config config) =
     config

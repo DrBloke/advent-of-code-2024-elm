@@ -2,12 +2,40 @@
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  /* text-align: center;
   color: #2c3e50;
   margin: 0 auto;
-  margin-top: 60px;
+  margin-top: 60px; */
 }
 
-a {
+/* a {
   color: #60b5cc;
+} */
+
+label,
+textarea {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  display: block;
+}
+
+textarea {
+  appearance: none;
+  padding: 10px;
+  max-width: 100%;
+  line-height: 1.5;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-shadow: 1px 1px 1px #999;
+}
+
+label {}
+
+textarea.invalid {
+  border-color: #900;
+  background-color: #fdd;
+}
+
+textarea:focus:invalid {
+  outline: none;
 }

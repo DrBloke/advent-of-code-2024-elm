@@ -1,12 +1,14 @@
 module Main exposing (main)
 
 import Browser
+import Helper.HtmlExtra as Html
 import Helper.ParserExtra exposing (deadEndsToString)
 import Html exposing (Html, button, div, text)
-import Html.Events exposing (onClick)
+import Html.Attributes as Attributes exposing (value)
+import Html.Events as Events
 import Parser
 import RockPaperScissors
-import Types exposing (Config(..))
+import Types exposing (Config(..), fromConfig)
 
 
 
@@ -14,52 +16,121 @@ import Types exposing (Config(..))
 
 
 main =
-    Browser.sandbox { init = init, update = update, view = view }
+    Browser.sandbox { init = init RockPaperScissors, update = update, view = view }
 
 
 
 -- MODEL
 
 
-type Model
+type Page
     = RockPaperScissors
 
 
-init : Model
-init =
-    RockPaperScissors
+type alias Model =
+    { page : Page
+    , inputData : String
+    }
+
+
+init : Page -> Model
+init page =
+    case page of
+        RockPaperScissors ->
+            { page = RockPaperScissors
+            , inputData =
+                RockPaperScissors.config
+                    |> fromConfig
+                    |> .defaultInput
+            }
 
 
 
 -- UPDATE
 
 
-type alias Msg =
-    ()
+type Msg
+    = Goto Page
+    | TextareaMsg String
+    | NoOp
 
 
 update : Msg -> Model -> Model
-update _ model =
-    case model of
-        RockPaperScissors ->
-            RockPaperScissors
+update msg model =
+    case msg of
+        Goto page ->
+            { model | page = page }
+
+        TextareaMsg value ->
+            { model | inputData = value }
+
+        NoOp ->
+            model
 
 
 
 -- VIEW
 
 
-view : Model -> Html ()
+view : Model -> Html Msg
 view model =
     let
         config =
-            case model of
+            case model.page of
                 RockPaperScissors ->
-                    RockPaperScissors.config |> Types.fromConfig
+                    RockPaperScissors.config
     in
-    case Parser.run config.parser config.defaultInput of
-        Ok parserOutput ->
-            config.render parserOutput
+    div []
+        [ input model.inputData config
+        , output model.inputData config
+        ]
 
-        Err error ->
-            div [] [ text (deadEndsToString error) ]
+
+parseInput : String -> Config a b -> Result String a
+parseInput inputData (Config config) =
+    Parser.run config.parser inputData
+        |> Result.mapError deadEndsToString
+
+
+input : String -> Config a b -> Html Msg
+input inputData ((Config config) as wrappedConfig) =
+    let
+        errorConfig =
+            case parseInput inputData wrappedConfig of
+                Ok _ ->
+                    { class = "valid"
+                    , content = Html.none
+                    }
+
+                Err error ->
+                    { class = "invalid"
+                    , content = Html.span [] [ text error ]
+                    }
+
+        textareaId =
+            config.identifier ++ "-textarea"
+    in
+    div []
+        [ Html.label [ Attributes.for textareaId ] [ Html.text config.inputLabel ]
+        , Html.textarea
+            [ Attributes.id textareaId
+            , Attributes.rows 10
+            , Attributes.cols 10
+            , Events.onInput TextareaMsg
+            ]
+            [ Html.text inputData ]
+        , errorConfig.content
+        ]
+
+
+output : String -> Config a b -> Html Msg
+output inputData ((Config config) as wrappedConfig) =
+    case parseInput inputData wrappedConfig of
+        Ok value ->
+            value
+                |> config.converter
+                |> config.render
+                |> Html.map (\_ -> NoOp)
+
+        Err _ ->
+            div [] [ text "The input data is invalid" ]
