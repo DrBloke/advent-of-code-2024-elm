@@ -11,9 +11,60 @@
 /* a {
   color: #60b5cc;
 } */
-.field {
-  margin-bottom: 20px;
+
+body {
+  margin: 0;
 }
+
+.container {
+  display: flex;
+  flex-flow: row wrap;
+  font-size: 16px;
+  /* justify-content: flex-start; */
+}
+
+.top-header {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0 10px;
+  background-color: #a1d9e9;
+  width: 100%;
+  min-width: 320px;
+  /* padding: 5px 10px; */
+}
+
+.top-header>img {
+  margin: 5px;
+}
+
+.top-header>h1 {
+  margin: 0 0;
+  font-size: 1.2rem;
+}
+
+.wrapper {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  gap: 30px 20px;
+  padding: 30px 5px;
+}
+
+.input {
+  max-width: 500px;
+  background-color: #a1d9e9;
+  padding: 10px;
+}
+
+.output {
+  /* margin-bottom: 20px; */
+  /* margin-left: 30px; */
+}
+
+/* INPUT TEXTAREA */
+.field {}
 
 label,
 textarea {
@@ -26,9 +77,10 @@ textarea {
   padding: 10px;
   max-width: 100%;
   line-height: 1.5;
-  border-radius: 5px;
+  border-radius: 5px, 5px, 0, 0;
   border: 1px solid #ccc;
   box-shadow: 1px 1px 1px #999;
+  margin: 0;
 }
 
 label {
@@ -45,7 +97,7 @@ textarea:focus:invalid {
 }
 
 .error {
-  max-width: 290px;
+  max-width: 286px;
   padding: 0.3em;
   font-size: 80%;
   color: white;

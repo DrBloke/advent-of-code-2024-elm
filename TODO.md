@@ -1,10 +1,11 @@
 # To do
-* Input in a text box 30m
-* Render errors 30m
 * Titles and other rendering 1h
+* accordian
 * Multiple configs 1h
 * Multiple outputs 1h
 * stdOut output to enable copy paste (maybe) 1h using string will help with string parsing below.
+* Cache input data so persists when switching page - local storage
+* Use Vite asset handling to import file
 
 
 * Multiple inputs combined into one 2h

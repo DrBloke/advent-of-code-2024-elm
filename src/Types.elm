@@ -12,6 +12,7 @@ type Config a b
         , defaultInput : String
         , inputLabel : String
         , identifier : String
+        , title : String
         }
 
 
@@ -24,6 +25,7 @@ fromConfig :
         , defaultInput : String
         , inputLabel : String
         , identifier : String
+        , title : String
         }
 fromConfig (Config config) =
     config

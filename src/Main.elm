@@ -80,9 +80,12 @@ view model =
                 RockPaperScissors ->
                     RockPaperScissors.config
     in
-    div []
-        [ input model.inputData config
-        , output model.inputData config
+    div [ Attributes.class "container" ]
+        [ div [ Attributes.class "top-header" ] [ Html.img [ Attributes.width 30, Attributes.height 30, Attributes.src "[VITE_PLUGIN_ELM_ASSET:./assets/logo.png]" ] [], Html.h1 [] [ config |> Types.fromConfig |> .title |> text ] ]
+        , div [ Attributes.class "wrapper" ]
+            [ div [ Attributes.class "input" ] [ input model.inputData config ]
+            , div [ Attributes.class "output" ] [ output model.inputData config ]
+            ]
         ]
 
 
