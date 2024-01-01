@@ -53,8 +53,6 @@ body {
 }
 
 .input {
-  max-width: 500px;
-  background-color: #a1d9e9;
   padding: 10px;
 }
 
@@ -104,4 +102,72 @@ textarea:focus:invalid {
   background-color: #900;
   border-radius: 0 0 5px 5px;
   box-sizing: border-box;
+}
+
+/* accordion */
+
+.accordion {
+  /* width: 100%; */
+  padding: 0 10px 10px 10px;
+  background-color: #d9e7eb;
+  max-width: 500px;
+}
+
+.accordion button {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding-left: 8px;
+  padding-right: 8px;
+  min-height: 44px;
+  width: 100%;
+  font-weight: 900;
+  font-size: 20px;
+  color: #1864ab;
+  cursor: pointer;
+  border-top: 1px solid #868e96;
+}
+
+.accordion button:focus {
+  outline: 4px solid #1864ab;
+  outline-offset: 5px;
+}
+
+.accordion button[aria-expanded="true"] {
+  border-bottom: 1px solid #ced4da;
+}
+
+.accordion h3:last-of-type button[aria-expanded="false"] {
+  border-bottom: 1px solid #868e96;
+}
+
+.accordion section:last-of-type {
+  border-bottom: 1px solid #868e96;
+}
+
+.accordion section {
+  padding-left: 8px;
+  padding-right: 9px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  /* font-size: 16px; */
+}
+
+.accordion svg {
+  width: 24px;
+  height: 24px;
+  color: inherit;
 }

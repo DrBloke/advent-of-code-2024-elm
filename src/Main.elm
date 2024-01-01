@@ -1,13 +1,16 @@
 module Main exposing (main)
 
+import Accessibility as Html exposing (Html, button, div, text)
+import Accessibility.Aria as Aria
 import Browser
+import FontAwesome as Icon
 import Helper.HtmlExtra as Html
 import Helper.ParserExtra exposing (deadEndsToString)
-import Html exposing (Html, button, div, text)
 import Html.Attributes as Attributes exposing (value)
 import Html.Events as Events
 import Parser
 import RockPaperScissors
+import Set exposing (Set)
 import Types exposing (Config(..), fromConfig)
 
 
@@ -30,6 +33,7 @@ type Page
 type alias Model =
     { page : Page
     , inputData : String
+    , expandedItems : Set String
     }
 
 
@@ -42,6 +46,7 @@ init page =
                 RockPaperScissors.config
                     |> fromConfig
                     |> .defaultInput
+            , expandedItems = Set.fromList [ "input-data" ]
             }
 
 
@@ -81,12 +86,66 @@ view model =
                     RockPaperScissors.config
     in
     div [ Attributes.class "container" ]
-        [ div [ Attributes.class "top-header" ] [ Html.img [ Attributes.width 30, Attributes.height 30, Attributes.src "[VITE_PLUGIN_ELM_ASSET:./assets/logo.png]" ] [], Html.h1 [] [ config |> Types.fromConfig |> .title |> text ] ]
+        [ div [ Attributes.class "top-header" ] [ Html.img "Elm logo" [ Attributes.width 30, Attributes.height 30, Attributes.src "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]" ], Html.h1 [] [ config |> Types.fromConfig |> .title |> text ] ]
         , div [ Attributes.class "wrapper" ]
-            [ div [ Attributes.class "input" ] [ input model.inputData config ]
+            [ accordion
+                [ { identifier = "input-data"
+                  , label = "Input data"
+                  , content = div [ Attributes.class "input" ] [ input model.inputData config ]
+                  }
+                ]
+                model.expandedItems
             , div [ Attributes.class "output" ] [ output model.inputData config ]
             ]
         ]
+
+
+accordion :
+    List
+        { identifier : String
+        , label : String
+        , content : Html Msg
+        }
+    -> Set String
+    -> Html Msg
+accordion items active =
+    div [ Attributes.id "accordion-group", Attributes.class "accordion" ]
+        (List.map
+            (\{ identifier, label, content } ->
+                let
+                    headerId =
+                        identifier ++ "-header-1"
+
+                    panelId =
+                        identifier ++ "-panel-1"
+
+                    isActive =
+                        Set.member identifier active
+
+                    stateIcon =
+                        -- Icon.icon Icon.minus
+                        if isActive then
+                            text "-"
+
+                        else
+                            text "+"
+                in
+                [ Html.h3 []
+                    [ button
+                        [ Attributes.id headerId
+                        , Aria.expanded isActive
+                        , Aria.controls [ panelId ]
+                        ]
+                        [ Html.span [] [ text label ], Html.span [] [ stateIcon ] ]
+                    ]
+                , Html.section
+                    [ Attributes.id panelId, Aria.labeledBy headerId ]
+                    [ content ]
+                ]
+            )
+            items
+            |> List.concat
+        )
 
 
 parseInput : String -> Config a b -> Result String a

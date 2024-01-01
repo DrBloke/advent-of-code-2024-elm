@@ -1,6 +1,6 @@
 module RockPaperScissors exposing (config)
 
-import Helper.ParserExtra exposing (deadEndsToString)
+import Helper.ParserExtra
 import Html exposing (Html, div, text)
 import Parser
     exposing
