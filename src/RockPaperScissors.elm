@@ -31,6 +31,7 @@ config =
         , inputLabel = "Enter the input data (Rows of A|B|C space X|Y|Z):"
         , identifier = "rock-paper-scissors"
         , title = "2a - Rock paper scissors"
+        , description = "Hello **World**"
         }
 
 

@@ -8,6 +8,7 @@ import Helper.HtmlExtra as Html
 import Helper.ParserExtra exposing (deadEndsToString)
 import Html.Attributes as Attributes exposing (value)
 import Html.Events as Events
+import Markdown
 import Parser
 import RockPaperScissors
 import Set exposing (Set)
@@ -100,7 +101,11 @@ view model =
         [ div [ Attributes.class "top-header" ] [ Html.img "Elm logo" [ Attributes.width 30, Attributes.height 30, Attributes.src "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]" ], Html.h1 [] [ config |> Types.fromConfig |> .title |> text ] ]
         , div [ Attributes.class "panel-with-sidebar" ]
             [ accordion
-                [ { identifier = "input-data"
+                [ { identifier = "description"
+                  , label = "The problem"
+                  , content = div [ Attributes.class "description" ] [ Markdown.toHtml [] <| .description <| Types.fromConfig config ]
+                  }
+                , { identifier = "input-data"
                   , label = "Input data"
                   , content = div [ Attributes.class "input" ] [ input model.inputData parsedInput config ]
                   }
@@ -125,10 +130,10 @@ accordion items active =
             (\{ identifier, label, content } ->
                 let
                     headerId =
-                        identifier ++ "-header-1"
+                        identifier ++ "-header"
 
                     panelId =
-                        identifier ++ "-panel-1"
+                        identifier ++ "-panel"
 
                     isActive =
                         Set.member identifier active
@@ -151,7 +156,7 @@ accordion items active =
                         [ Html.span [] [ text label ], Html.span [] [ stateIcon ] ]
                     ]
                 , Html.section
-                    [ Attributes.id panelId, Aria.labeledBy headerId, Attributes.hidden isActive ]
+                    [ Attributes.id panelId, Aria.labeledBy headerId, Attributes.hidden (not isActive) ]
                     [ content ]
                 ]
             )

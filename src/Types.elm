@@ -1,7 +1,11 @@
-module Types exposing (Config(..), fromConfig)
+module Types exposing (Config(..), Markdown, fromConfig)
 
 import Html exposing (Html)
 import Parser exposing (Parser)
+
+
+type alias Markdown =
+    String
 
 
 type Config a b
@@ -13,6 +17,7 @@ type Config a b
         , inputLabel : String
         , identifier : String
         , title : String
+        , description : Markdown
         }
 
 
@@ -26,6 +31,7 @@ fromConfig :
         , inputLabel : String
         , identifier : String
         , title : String
+        , description : Markdown
         }
 fromConfig (Config config) =
     config

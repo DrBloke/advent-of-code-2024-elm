@@ -75,7 +75,7 @@ body {
 .panel-with-sidebar>:first-child {
   /* min-width: 300px; */
   flex-grow: 1;
-  /* flex-shrink: 1; */
+  flex-shrink: 1;
   flex-basis: 400px;
 }
 
@@ -131,7 +131,7 @@ textarea:focus:invalid {
 
 .accordion {
   /* width: 100%; */
-  padding: 0 10px 10px 10px;
+  padding: 0;
   background-color: #d9e7eb;
   /* width: 100%; */
   /* max-width: 500px; */
@@ -139,16 +139,17 @@ textarea:focus:invalid {
 
 .accordion h3 {
   /* width: 100%; */
+  margin: 0;
 }
 
 .accordion button {
-  background: transparent;
+  background: transpa1rent;
   border: 0;
   border-radius: 0;
   padding: 0;
-  /* display: -webkit-box;
+  display: -webkit-box;
   display: -webkit-flex;
-  display: -ms-flexbox; */
+  display: -ms-flexbox;
   display: flex;
   -webkit-align-items: center;
   -webkit-box-align: center;
@@ -171,7 +172,7 @@ textarea:focus:invalid {
 
 .accordion button:focus {
   outline: 4px solid #1864ab;
-  outline-offset: 5px;
+  outline-offset: -4px;
 }
 
 .accordion button[aria-expanded="true"] {
