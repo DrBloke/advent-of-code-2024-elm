@@ -17,6 +17,10 @@ body {
 }
 
 .container {
+  /* display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex; */
   display: flex;
   flex-flow: row wrap;
   font-size: 16px;
@@ -44,14 +48,6 @@ body {
   font-size: 1.2rem;
 }
 
-.wrapper {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-start;
-  gap: 30px 20px;
-  padding: 30px 5px;
-}
-
 .input {
   padding: 10px;
 }
@@ -61,24 +57,51 @@ body {
   /* margin-left: 30px; */
 }
 
-/* INPUT TEXTAREA */
-.field {}
+/* COMPONENTS */
 
+/* PANEL WITH SIDEBAR LAYOUT*/
+.panel-with-sidebar {
+  /* display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex; */
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  gap: 30px 20px;
+  /* padding: 30px 5px; */
+}
+
+.panel-with-sidebar>:first-child {
+  /* min-width: 300px; */
+  flex-grow: 1;
+  /* flex-shrink: 1; */
+  flex-basis: 400px;
+}
+
+.panel-with-sidebar>:last-child {
+  flex-basis: 0;
+  flex-grow: 999;
+  min-inline-size: 40%;
+}
+
+
+/* INPUT TEXTAREA */
 label,
 textarea {
   font-size: 1rem;
-  display: block;
+  /* display: block; */
 }
 
 textarea {
   appearance: none;
   padding: 10px;
-  max-width: 100%;
+  width: 95%;
   line-height: 1.5;
   border-radius: 5px, 5px, 0, 0;
   border: 1px solid #ccc;
   box-shadow: 1px 1px 1px #999;
-  margin: 0;
+  margin: 10px 0;
 }
 
 label {
@@ -95,13 +118,13 @@ textarea:focus:invalid {
 }
 
 .error {
-  max-width: 286px;
   padding: 0.3em;
   font-size: 80%;
   color: white;
   background-color: #900;
   border-radius: 0 0 5px 5px;
   box-sizing: border-box;
+  width: 95%;
 }
 
 /* accordion */
@@ -110,7 +133,12 @@ textarea:focus:invalid {
   /* width: 100%; */
   padding: 0 10px 10px 10px;
   background-color: #d9e7eb;
-  max-width: 500px;
+  /* width: 100%; */
+  /* max-width: 500px; */
+}
+
+.accordion h3 {
+  /* width: 100%; */
 }
 
 .accordion button {
@@ -118,9 +146,9 @@ textarea:focus:invalid {
   border: 0;
   border-radius: 0;
   padding: 0;
-  display: -webkit-box;
+  /* display: -webkit-box;
   display: -webkit-flex;
-  display: -ms-flexbox;
+  display: -ms-flexbox; */
   display: flex;
   -webkit-align-items: center;
   -webkit-box-align: center;

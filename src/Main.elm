@@ -57,6 +57,7 @@ init page =
 type Msg
     = Goto Page
     | TextareaMsg String
+    | ToggleAccordionItem String
     | NoOp
 
 
@@ -68,6 +69,13 @@ update msg model =
 
         TextareaMsg value ->
             { model | inputData = value }
+
+        ToggleAccordionItem identifier ->
+            if Set.member identifier model.expandedItems then
+                { model | expandedItems = Set.remove identifier model.expandedItems }
+
+            else
+                { model | expandedItems = Set.insert identifier model.expandedItems }
 
         NoOp ->
             model
@@ -84,18 +92,21 @@ view model =
             case model.page of
                 RockPaperScissors ->
                     RockPaperScissors.config
+
+        parsedInput =
+            parseInput config model.inputData
     in
     div [ Attributes.class "container" ]
         [ div [ Attributes.class "top-header" ] [ Html.img "Elm logo" [ Attributes.width 30, Attributes.height 30, Attributes.src "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]" ], Html.h1 [] [ config |> Types.fromConfig |> .title |> text ] ]
-        , div [ Attributes.class "wrapper" ]
+        , div [ Attributes.class "panel-with-sidebar" ]
             [ accordion
                 [ { identifier = "input-data"
                   , label = "Input data"
-                  , content = div [ Attributes.class "input" ] [ input model.inputData config ]
+                  , content = div [ Attributes.class "input" ] [ input model.inputData parsedInput config ]
                   }
                 ]
                 model.expandedItems
-            , div [ Attributes.class "output" ] [ output model.inputData config ]
+            , div [ Attributes.class "output" ] [ output parsedInput config ]
             ]
         ]
 
@@ -135,11 +146,12 @@ accordion items active =
                         [ Attributes.id headerId
                         , Aria.expanded isActive
                         , Aria.controls [ panelId ]
+                        , Events.onClick (ToggleAccordionItem identifier)
                         ]
                         [ Html.span [] [ text label ], Html.span [] [ stateIcon ] ]
                     ]
                 , Html.section
-                    [ Attributes.id panelId, Aria.labeledBy headerId ]
+                    [ Attributes.id panelId, Aria.labeledBy headerId, Attributes.hidden isActive ]
                     [ content ]
                 ]
             )
@@ -148,17 +160,17 @@ accordion items active =
         )
 
 
-parseInput : String -> Config a b -> Result String a
-parseInput inputData (Config config) =
+parseInput : Config a b -> String -> Result String a
+parseInput (Config config) inputData =
     Parser.run config.parser inputData
         |> Result.mapError deadEndsToString
 
 
-input : String -> Config a b -> Html Msg
-input inputData ((Config config) as wrappedConfig) =
+input : String -> Result String a -> Config a b -> Html Msg
+input inputData parsedInput (Config config) =
     let
         errorConfig =
-            case parseInput inputData wrappedConfig of
+            case parsedInput of
                 Ok _ ->
                     { class = "valid"
                     , content = Html.none
@@ -177,7 +189,8 @@ input inputData ((Config config) as wrappedConfig) =
         , Html.textarea
             [ Attributes.id textareaId
             , Attributes.rows 10
-            , Attributes.cols 30
+
+            -- , Attributes.cols 30
             , Attributes.class errorConfig.class
             , Events.onInput TextareaMsg
             ]
@@ -186,9 +199,9 @@ input inputData ((Config config) as wrappedConfig) =
         ]
 
 
-output : String -> Config a b -> Html Msg
-output inputData ((Config config) as wrappedConfig) =
-    case parseInput inputData wrappedConfig of
+output : Result String a -> Config a b -> Html Msg
+output parsedInput (Config config) =
+    case parsedInput of
         Ok value ->
             value
                 |> config.converter

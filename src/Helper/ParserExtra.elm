@@ -1,6 +1,6 @@
 module Helper.ParserExtra exposing (deadEndsToString)
 
-import Parser exposing (DeadEnd)
+import Parser
 
 
 deadEndsToString : List Parser.DeadEnd -> String
