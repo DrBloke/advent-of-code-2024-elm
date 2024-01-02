@@ -35,13 +35,11 @@ view config inputData parsedInput msg =
         textareaId =
             config.identifier ++ "-textarea"
     in
-    Html.div [ Attributes.class "field" ]
+    Html.div [ Attributes.class "textarea-field" ]
         [ Html.label [ Attributes.for textareaId ] [ Html.text config.inputLabel ]
         , Html.textarea
             [ Attributes.id textareaId
             , Attributes.rows 10
-
-            -- , Attributes.cols 30
             , Attributes.class errorConfig.class
             , Events.onInput msg
             ]

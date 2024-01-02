@@ -1,14 +1,12 @@
 module Main exposing (main)
 
-import Accessibility as Html exposing (Html, button, div, text)
-import Accessibility.Aria as Aria
+import Accessibility as Html exposing (Html)
 import Browser
+import Components.Accordion as Accordion
 import Components.Textarea as Textarea
-import FontAwesome as Icon
 import Helper.HtmlExtra as Html
 import Helper.ParserExtra exposing (deadEndsToString)
 import Html.Attributes as Attributes exposing (value)
-import Html.Events as Events
 import Markdown
 import Parser
 import RockPaperScissors
@@ -101,72 +99,24 @@ view model =
         parsedInput =
             parseInput wrappedConfig model.inputData
     in
-    div [ Attributes.class "container" ]
-        [ div [ Attributes.class "top-header" ] [ Html.img "Elm logo" [ Attributes.width 30, Attributes.height 30, Attributes.src "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]" ], Html.h1 [] [ config |> .title |> text ] ]
-        , div [ Attributes.class "panel-with-sidebar" ]
-            [ accordion
+    Html.div [ Attributes.class "container" ]
+        [ Html.div [ Attributes.class "top-header" ] [ Html.img "Elm logo" [ Attributes.width 30, Attributes.height 30, Attributes.src "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]" ], Html.h1 [] [ config |> .title |> Html.text ] ]
+        , Html.div [ Attributes.class "panel-with-sidebar" ]
+            [ Accordion.view
                 [ { identifier = "description"
                   , label = "The problem"
-                  , content = div [ Attributes.class "description" ] [ Markdown.toHtml [] <| .description config ]
+                  , content = Html.div [ Attributes.class "description" ] [ Markdown.toHtml [] <| config.description ]
                   }
                 , { identifier = "input-data"
                   , label = "Input data"
-                  , content = div [ Attributes.class "input" ] [ Textarea.view { identifier = config.identifier, inputLabel = config.inputLabel } model.inputData parsedInput TextareaMsg ]
+                  , content = Html.div [ Attributes.class "input" ] [ Textarea.view { identifier = config.identifier, inputLabel = config.inputLabel } model.inputData parsedInput TextareaMsg ]
                   }
                 ]
                 model.expandedItems
-            , div [ Attributes.class "output" ] [ output parsedInput wrappedConfig ]
+                ToggleAccordionItem
+            , Html.div [ Attributes.class "output" ] [ output parsedInput wrappedConfig ]
             ]
         ]
-
-
-accordion :
-    List
-        { identifier : String
-        , label : String
-        , content : Html Msg
-        }
-    -> Set String
-    -> Html Msg
-accordion items active =
-    div [ Attributes.id "accordion-group", Attributes.class "accordion" ]
-        (List.map
-            (\{ identifier, label, content } ->
-                let
-                    headerId =
-                        identifier ++ "-header"
-
-                    panelId =
-                        identifier ++ "-panel"
-
-                    isActive =
-                        Set.member identifier active
-
-                    stateIcon =
-                        -- Icon.icon Icon.minus
-                        if isActive then
-                            text "-"
-
-                        else
-                            text "+"
-                in
-                [ Html.h3 []
-                    [ button
-                        [ Attributes.id headerId
-                        , Aria.expanded isActive
-                        , Aria.controls [ panelId ]
-                        , Events.onClick (ToggleAccordionItem identifier)
-                        ]
-                        [ Html.span [ Attributes.class "accordion-label" ] [ text label ], Html.span [] [ stateIcon ] ]
-                    ]
-                , Html.section
-                    [ Attributes.id panelId, Aria.labeledBy headerId, Attributes.hidden (not isActive) ]
-                    [ content ]
-                ]
-            )
-            items
-            |> List.concat
-        )
 
 
 parseInput : Config a b -> String -> Result String a
@@ -185,4 +135,4 @@ output parsedInput (Config config) =
                 |> Html.map (\_ -> NoOp)
 
         Err _ ->
-            div [] [ text "The input data is invalid" ]
+            Html.div [] [ Html.text "The input data is invalid" ]

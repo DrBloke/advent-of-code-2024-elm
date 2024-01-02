@@ -1,4 +1,5 @@
 # To do
+* Move sidebar and banner layouts into component folder
 * Multiple configs 1h (multiple pages)
 * Multiple outputs 1h
 * stdOut output to enable copy paste (maybe) 1h using string will help with string parsing below.
