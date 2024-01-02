@@ -3,6 +3,7 @@ module Main exposing (main)
 import Accessibility as Html exposing (Html, button, div, text)
 import Accessibility.Aria as Aria
 import Browser
+import Components.Textarea as Textarea
 import FontAwesome as Icon
 import Helper.HtmlExtra as Html
 import Helper.ParserExtra exposing (deadEndsToString)
@@ -89,29 +90,32 @@ update msg model =
 view : Model -> Html Msg
 view model =
     let
-        config =
+        wrappedConfig =
             case model.page of
                 RockPaperScissors ->
                     RockPaperScissors.config
 
+        config =
+            Types.fromConfig wrappedConfig
+
         parsedInput =
-            parseInput config model.inputData
+            parseInput wrappedConfig model.inputData
     in
     div [ Attributes.class "container" ]
-        [ div [ Attributes.class "top-header" ] [ Html.img "Elm logo" [ Attributes.width 30, Attributes.height 30, Attributes.src "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]" ], Html.h1 [] [ config |> Types.fromConfig |> .title |> text ] ]
+        [ div [ Attributes.class "top-header" ] [ Html.img "Elm logo" [ Attributes.width 30, Attributes.height 30, Attributes.src "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]" ], Html.h1 [] [ config |> .title |> text ] ]
         , div [ Attributes.class "panel-with-sidebar" ]
             [ accordion
                 [ { identifier = "description"
                   , label = "The problem"
-                  , content = div [ Attributes.class "description" ] [ Markdown.toHtml [] <| .description <| Types.fromConfig config ]
+                  , content = div [ Attributes.class "description" ] [ Markdown.toHtml [] <| .description config ]
                   }
                 , { identifier = "input-data"
                   , label = "Input data"
-                  , content = div [ Attributes.class "input" ] [ input model.inputData parsedInput config ]
+                  , content = div [ Attributes.class "input" ] [ Textarea.view { identifier = config.identifier, inputLabel = config.inputLabel } model.inputData parsedInput TextareaMsg ]
                   }
                 ]
                 model.expandedItems
-            , div [ Attributes.class "output" ] [ output parsedInput config ]
+            , div [ Attributes.class "output" ] [ output parsedInput wrappedConfig ]
             ]
         ]
 
@@ -169,39 +173,6 @@ parseInput : Config a b -> String -> Result String a
 parseInput (Config config) inputData =
     Parser.run config.parser inputData
         |> Result.mapError deadEndsToString
-
-
-input : String -> Result String a -> Config a b -> Html Msg
-input inputData parsedInput (Config config) =
-    let
-        errorConfig =
-            case parsedInput of
-                Ok _ ->
-                    { class = "valid"
-                    , content = Html.none
-                    }
-
-                Err error ->
-                    { class = "invalid"
-                    , content = Html.div [ Attributes.class "error" ] [ text error ]
-                    }
-
-        textareaId =
-            config.identifier ++ "-textarea"
-    in
-    div [ Attributes.class "field" ]
-        [ Html.label [ Attributes.for textareaId ] [ Html.text config.inputLabel ]
-        , Html.textarea
-            [ Attributes.id textareaId
-            , Attributes.rows 10
-
-            -- , Attributes.cols 30
-            , Attributes.class errorConfig.class
-            , Events.onInput TextareaMsg
-            ]
-            [ Html.text inputData ]
-        , errorConfig.content
-        ]
 
 
 output : Result String a -> Config a b -> Html Msg
