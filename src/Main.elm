@@ -7,6 +7,7 @@ import Components.Textarea as Textarea
 import Helper.HtmlExtra as Html
 import Helper.ParserExtra exposing (deadEndsToString)
 import Html.Attributes as Attributes exposing (value)
+import Layouts.Sidebar as Sidebar
 import Markdown
 import Parser
 import RockPaperScissors
@@ -98,14 +99,12 @@ view model =
 
         parsedInput =
             parseInput wrappedConfig model.inputData
-    in
-    Html.div [ Attributes.class "container" ]
-        [ Html.div [ Attributes.class "top-header" ] [ Html.img "Elm logo" [ Attributes.width 30, Attributes.height 30, Attributes.src "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]" ], Html.h1 [] [ config |> .title |> Html.text ] ]
-        , Html.div [ Attributes.class "panel-with-sidebar" ]
-            [ Accordion.view
+
+        accordion =
+            Accordion.view
                 [ { identifier = "description"
                   , label = "The problem"
-                  , content = Html.div [ Attributes.class "description" ] [ Markdown.toHtml [] <| config.description ]
+                  , content = Html.div [ Attributes.class "description" ] [ Markdown.toHtml [] config.description ]
                   }
                 , { identifier = "input-data"
                   , label = "Input data"
@@ -114,8 +113,11 @@ view model =
                 ]
                 model.expandedItems
                 ToggleAccordionItem
-            , Html.div [ Attributes.class "output" ] [ output parsedInput wrappedConfig ]
-            ]
+    in
+    Html.div [ Attributes.class "container" ]
+        [ Html.div [ Attributes.class "top-header" ]
+            [ Html.img "Elm logo" [ Attributes.width 30, Attributes.height 30, Attributes.src "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]" ], Html.h1 [] [ Html.text config.title ] ]
+        , Sidebar.view accordion (output parsedInput wrappedConfig)
         ]
 
 
@@ -127,12 +129,16 @@ parseInput (Config config) inputData =
 
 output : Result String a -> Config a b -> Html Msg
 output parsedInput (Config config) =
-    case parsedInput of
-        Ok value ->
-            value
-                |> config.converter
-                |> config.render
-                |> Html.map (\_ -> NoOp)
+    let
+        content =
+            case parsedInput of
+                Ok value ->
+                    value
+                        |> config.converter
+                        |> config.render
+                        |> Html.map (\_ -> NoOp)
 
-        Err _ ->
-            Html.div [] [ Html.text "The input data is invalid" ]
+                Err _ ->
+                    Html.text "The input data is invalid"
+    in
+    Html.div [ Attributes.class "output" ] [ content ]

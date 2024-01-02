@@ -13,8 +13,8 @@ body {
   display: -moz-box;
   display: -ms-flexbox;
   display: -webkit-flex; */
-  display: flex;
-  flex-flow: row wrap;
+  /* display: flex; */
+  /* flex-flow: row wrap; */
   font-size: 16px;
   /* justify-content: flex-start; */
 }
@@ -57,7 +57,7 @@ body {
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;
-  gap: 30px 0;
+  gap: 0 0;
   /* padding: 30px 5px; */
 }
 
@@ -71,7 +71,7 @@ body {
 .panel-with-sidebar>:last-child {
   flex-basis: 0;
   flex-grow: 999;
-  min-inline-size: 400px;
+  min-inline-size: 60%;
 }
 
 
