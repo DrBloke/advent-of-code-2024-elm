@@ -2,15 +2,7 @@
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* text-align: center;
-  color: #2c3e50;
-  margin: 0 auto;
-  margin-top: 60px; */
 }
-
-/* a {
-  color: #60b5cc;
-} */
 
 body {
   margin: 0;
@@ -48,9 +40,6 @@ body {
   font-size: 1.2rem;
 }
 
-.input {
-  padding: 10px;
-}
 
 .output {
   /* margin-bottom: 20px; */
@@ -61,14 +50,14 @@ body {
 
 /* PANEL WITH SIDEBAR LAYOUT*/
 .panel-with-sidebar {
-  /* display: -webkit-box;
+  display: -webkit-box;
   display: -moz-box;
   display: -ms-flexbox;
-  display: -webkit-flex; */
+  display: -webkit-flex;
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;
-  gap: 30px 20px;
+  gap: 30px 0;
   /* padding: 30px 5px; */
 }
 
@@ -179,17 +168,26 @@ textarea:focus:invalid {
   border-bottom: 1px solid #ced4da;
 }
 
+.accordion button:first-child {
+  min-width: 252px;
+}
+
+.accordion h3:first-of-type button {
+  border: 0;
+}
+
 .accordion h3:last-of-type button[aria-expanded="false"] {
   border-bottom: 1px solid #868e96;
 }
+
 
 .accordion section:last-of-type {
   border-bottom: 1px solid #868e96;
 }
 
 .accordion section {
-  padding-left: 8px;
-  padding-right: 9px;
+  padding-left: 20px;
+  padding-right: 20px;
   padding-top: 16px;
   padding-bottom: 16px;
   /* font-size: 16px; */

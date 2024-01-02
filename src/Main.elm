@@ -153,7 +153,7 @@ accordion items active =
                         , Aria.controls [ panelId ]
                         , Events.onClick (ToggleAccordionItem identifier)
                         ]
-                        [ Html.span [] [ text label ], Html.span [] [ stateIcon ] ]
+                        [ Html.span [ Attributes.class "accordion-label" ] [ text label ], Html.span [] [ stateIcon ] ]
                     ]
                 , Html.section
                     [ Attributes.id panelId, Aria.labeledBy headerId, Attributes.hidden (not isActive) ]
