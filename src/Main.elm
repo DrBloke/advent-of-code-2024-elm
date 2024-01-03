@@ -13,6 +13,7 @@ import Parser
 import RockPaperScissors
 import Set exposing (Set)
 import Types exposing (Config(..), fromConfig)
+import Update2 as Update
 
 
 
@@ -20,7 +21,7 @@ import Types exposing (Config(..), fromConfig)
 
 
 main =
-    Browser.sandbox { init = init RockPaperScissors, update = update, view = view }
+    Browser.element { init = init, update = update, view = view, subscriptions = subscriptions }
 
 
 
@@ -38,17 +39,28 @@ type alias Model =
     }
 
 
-init : Page -> Model
-init page =
-    case page of
+urlToPage : String -> Page
+urlToPage url =
+    case url of
+        "rock-paper-scissors" ->
+            RockPaperScissors
+
+        _ ->
+            RockPaperScissors
+
+
+init : String -> ( Model, Cmd Msg )
+init url =
+    case urlToPage url of
         RockPaperScissors ->
-            { page = RockPaperScissors
-            , inputData =
-                RockPaperScissors.config
-                    |> fromConfig
-                    |> .defaultInput
-            , expandedItems = Set.fromList [ "input-data" ]
-            }
+            Update.pure
+                { page = RockPaperScissors
+                , inputData =
+                    RockPaperScissors.config
+                        |> fromConfig
+                        |> .defaultInput
+                , expandedItems = Set.fromList [ "input-data" ]
+                }
 
 
 
@@ -62,24 +74,28 @@ type Msg
     | NoOp
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Goto page ->
-            { model | page = page }
+            Update.pure
+                { model | page = page }
 
         TextareaMsg value ->
-            { model | inputData = value }
+            Update.pure
+                { model | inputData = value }
 
         ToggleAccordionItem identifier ->
-            if Set.member identifier model.expandedItems then
-                { model | expandedItems = Set.remove identifier model.expandedItems }
+            Update.pure
+                (if Set.member identifier model.expandedItems then
+                    { model | expandedItems = Set.remove identifier model.expandedItems }
 
-            else
-                { model | expandedItems = Set.insert identifier model.expandedItems }
+                 else
+                    { model | expandedItems = Set.insert identifier model.expandedItems }
+                )
 
         NoOp ->
-            model
+            Update.pure model
 
 
 
@@ -131,3 +147,8 @@ view model =
             HeaderLTM.view { logoAltText = "Elm logo", logoSrc = "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]", title = config.title }
     in
     WrapperHeaderSidebar.view { header = header, sidebar = accordion, notSidebar = output }
+
+
+subscriptions : Model -> Sub Msg
+subscriptions _ =
+    Sub.none
