@@ -15,11 +15,11 @@ body {
   display: -webkit-flex; */
   /* display: flex; */
   /* flex-flow: row wrap; */
-  font-size: 16px;
+  /* font-size: 16px; */
   /* justify-content: flex-start; */
 }
 
-.top-header {
+.header-with-logo-title-menu {
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;
@@ -31,20 +31,16 @@ body {
   /* padding: 5px 10px; */
 }
 
-.top-header>img {
+.header-with-logo-title-menu>img {
   margin: 5px;
 }
 
-.top-header>h1 {
+.header-with-logo-title-menu>h1 {
   margin: 0 0;
   font-size: 1.2rem;
 }
 
 
-.output {
-  /* margin-bottom: 20px; */
-  /* margin-left: 30px; */
-}
 
 /* COMPONENTS */
 

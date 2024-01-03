@@ -1,13 +1,13 @@
 module Main exposing (main)
 
-import Accessibility as Html exposing (Html)
+import Accessibility exposing (Html)
 import Browser
 import Components.Accordion as Accordion
+import Components.ConditionalContent as ConditionalContent
+import Components.HeaderLTM as HeaderLTM
 import Components.Textarea as Textarea
-import Helper.HtmlExtra as Html
 import Helper.ParserExtra exposing (deadEndsToString)
-import Html.Attributes as Attributes exposing (value)
-import Layouts.Sidebar as Sidebar
+import Layouts.WrapperHeaderSidebar as WrapperHeaderSidebar
 import Markdown
 import Parser
 import RockPaperScissors
@@ -98,47 +98,36 @@ view model =
             Types.fromConfig wrappedConfig
 
         parsedInput =
-            parseInput wrappedConfig model.inputData
+            Parser.run config.parser model.inputData
+                |> Result.mapError deadEndsToString
 
         accordion =
             Accordion.view
                 [ { identifier = "description"
                   , label = "The problem"
-                  , content = Html.div [ Attributes.class "description" ] [ Markdown.toHtml [] config.description ]
+                  , content = Markdown.toHtml [] config.description
                   }
                 , { identifier = "input-data"
                   , label = "Input data"
-                  , content = Html.div [ Attributes.class "input" ] [ Textarea.view { identifier = config.identifier, inputLabel = config.inputLabel } model.inputData parsedInput TextareaMsg ]
+                  , content =
+                        Textarea.view
+                            { identifier = config.identifier, inputLabel = config.inputLabel }
+                            model.inputData
+                            parsedInput
+                            TextareaMsg
                   }
                 ]
                 model.expandedItems
                 ToggleAccordionItem
+
+        output =
+            let
+                contentOrError =
+                    Result.map config.render parsedInput
+            in
+            ConditionalContent.view contentOrError Nothing (\_ -> NoOp)
+
+        header =
+            HeaderLTM.view { logoAltText = "Elm logo", logoSrc = "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]", title = config.title }
     in
-    Html.div [ Attributes.class "container" ]
-        [ Html.div [ Attributes.class "top-header" ]
-            [ Html.img "Elm logo" [ Attributes.width 30, Attributes.height 30, Attributes.src "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]" ], Html.h1 [] [ Html.text config.title ] ]
-        , Sidebar.view accordion (output parsedInput wrappedConfig)
-        ]
-
-
-parseInput : Config a b -> String -> Result String a
-parseInput (Config config) inputData =
-    Parser.run config.parser inputData
-        |> Result.mapError deadEndsToString
-
-
-output : Result String a -> Config a b -> Html Msg
-output parsedInput (Config config) =
-    let
-        content =
-            case parsedInput of
-                Ok value ->
-                    value
-                        |> config.converter
-                        |> config.render
-                        |> Html.map (\_ -> NoOp)
-
-                Err _ ->
-                    Html.text "The input data is invalid"
-    in
-    Html.div [ Attributes.class "output" ] [ content ]
+    WrapperHeaderSidebar.view { header = header, sidebar = accordion, notSidebar = output }
