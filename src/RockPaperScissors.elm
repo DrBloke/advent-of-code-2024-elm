@@ -147,7 +147,7 @@ parseScoredRound =
                         -}
                         -1
             in
-            ScoredRound elf me (choiceScore + resultScore) |> Debug.log "scoring"
+            ScoredRound elf me (choiceScore + resultScore)
         )
         |. spaces
         |= parseElf
