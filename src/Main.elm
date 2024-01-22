@@ -125,9 +125,7 @@ view model_ =
         PageModel model ->
             let
                 wrappedConfig =
-                    case model.page of
-                        RockPaperScissors ->
-                            Page.RockPaperScissors.config
+                    Route.pageToConfig model.page
 
                 config =
                     Types.fromConfig wrappedConfig

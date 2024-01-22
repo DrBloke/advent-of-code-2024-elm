@@ -1,6 +1,9 @@
 module Route exposing (..)
 
+import Html exposing (a)
 import Maybe.Extra as Maybe
+import Page.RockPaperScissors as RockPaperScissors
+import Types exposing (Config)
 import Url
 import Url.Parser exposing (Parser, map, oneOf, parse, string, top)
 
@@ -18,6 +21,13 @@ type Page
 pageAndPath : List ( Page, String )
 pageAndPath =
     [ ( RockPaperScissors, "rock-paper-scissors" ) ]
+
+
+pageToConfig : Page -> Config Int Int
+pageToConfig page =
+    case page of
+        RockPaperScissors ->
+            RockPaperScissors.config
 
 
 pathToRoute : String -> Route
@@ -44,3 +54,12 @@ toRoute string =
             (\url ->
                 Maybe.withDefault Index (parse route url)
             )
+
+
+
+-- pageToPath : Page -> String
+-- pageToPath page =
+--     pageAndPath
+--         |> List.filter (\( page_, _ ) -> page_ == page)
+--         |> List.head
+--         |> Maybe.unwrap "" Tuple.second

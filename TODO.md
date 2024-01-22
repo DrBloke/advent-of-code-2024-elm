@@ -15,3 +15,4 @@
 * Sort out icons
 * routing (maybe file-based, unless can use config)
 * Keyboard accessibility of accordion
+* Route suggester if typo
