@@ -1,4 +1,4 @@
-module RockPaperScissors exposing (config)
+module Page.RockPaperScissors exposing (config)
 
 import Helper.ParserExtra
 import Html exposing (Html, div, text)
@@ -30,7 +30,7 @@ config =
         , defaultInput = defaultData
         , inputLabel = "Enter the input data (Rows of A|B|C space X|Y|Z):"
         , identifier = "rock-paper-scissors"
-        , title = "2a - Rock paper scissors"
+        , title = "Rock paper scissors"
         , description = "Hello **World**"
         }
 

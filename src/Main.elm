@@ -9,8 +9,8 @@ import Components.Textarea as Textarea
 import Helper.ParserExtra exposing (deadEndsToString)
 import Layouts.WrapperHeaderSidebar as WrapperHeaderSidebar
 import Markdown
+import Page.RockPaperScissors
 import Parser
-import RockPaperScissors
 import Route exposing (Page(..), Route(..))
 import Set exposing (Set)
 import Types exposing (Config(..), fromConfig)
@@ -47,7 +47,7 @@ init url =
                 (PageModel
                     { page = RockPaperScissors
                     , inputData =
-                        RockPaperScissors.config
+                        Page.RockPaperScissors.config
                             |> fromConfig
                             |> .defaultInput
                     , expandedItems = Set.fromList [ "input-data" ]
@@ -105,13 +105,13 @@ update msg model_ =
                 _ ->
                     Update.pure IndexModel
 
-        NotFoundModel _ ->
+        NotFoundModel path ->
             case msg of
                 UrlChanged page ->
                     init page
 
                 _ ->
-                    Update.pure IndexModel
+                    Update.pure (NotFoundModel path)
 
 
 
@@ -126,7 +126,7 @@ view model_ =
                 wrappedConfig =
                     case model.page of
                         RockPaperScissors ->
-                            RockPaperScissors.config
+                            Page.RockPaperScissors.config
 
                 config =
                     Types.fromConfig wrappedConfig

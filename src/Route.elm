@@ -2,7 +2,7 @@ module Route exposing (..)
 
 import Maybe.Extra as Maybe
 import Url
-import Url.Parser exposing (Parser, map, oneOf, parse, s, string, top)
+import Url.Parser exposing (Parser, map, oneOf, parse, string, top)
 
 
 type Route
