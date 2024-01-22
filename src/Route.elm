@@ -15,14 +15,17 @@ type Page
     = RockPaperScissors
 
 
+pageAndPath : List ( Page, String )
+pageAndPath =
+    [ ( RockPaperScissors, "rock-paper-scissors" ) ]
+
+
 pathToRoute : String -> Route
 pathToRoute path =
-    case path of
-        "rock-paper-scissors" ->
-            Route RockPaperScissors
-
-        _ ->
-            NotFound path
+    pageAndPath
+        |> List.filter (\( _, path_ ) -> path_ == path)
+        |> List.head
+        |> Maybe.unwrap (NotFound path) (Tuple.first >> Route)
 
 
 route : Parser (Route -> Route) Route

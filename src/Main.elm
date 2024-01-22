@@ -7,6 +7,7 @@ import Components.ConditionalContent as ConditionalContent
 import Components.HeaderLTM as HeaderLTM
 import Components.Textarea as Textarea
 import Helper.ParserExtra exposing (deadEndsToString)
+import Layouts.WrapperHeader as WrapperHeader
 import Layouts.WrapperHeaderSidebar as WrapperHeaderSidebar
 import Markdown
 import Page.RockPaperScissors
@@ -145,7 +146,9 @@ view model_ =
                           , label = "Input data"
                           , content =
                                 Textarea.view
-                                    { identifier = config.identifier, inputLabel = config.inputLabel }
+                                    { identifier = config.identifier
+                                    , inputLabel = config.inputLabel
+                                    }
                                     model.inputData
                                     parsedInput
                                     TextareaMsg
@@ -162,15 +165,42 @@ view model_ =
                     ConditionalContent.view contentOrError Nothing (\_ -> NoOp)
 
                 header =
-                    HeaderLTM.view { logoAltText = "Elm logo", logoSrc = "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]", title = config.title }
+                    HeaderLTM.view
+                        { logoAltText = "Elm logo"
+                        , logoSrc = "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]"
+                        , title = config.title
+                        }
             in
             WrapperHeaderSidebar.view { header = header, sidebar = accordion, notSidebar = output }
 
         IndexModel ->
-            Accessibility.text "Hello"
+            let
+                header =
+                    HeaderLTM.view
+                        { logoAltText = "Elm logo"
+                        , logoSrc = "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]"
+                        , title = "Advent of Code 2022"
+                        }
+
+                content =
+                    Accessibility.text "Hello"
+            in
+            WrapperHeader.view { header = header, content = content }
 
         NotFoundModel path ->
-            Accessibility.text (String.replace "{{path}}" path """The path "/{{path}}" does not exist.""")
+            let
+                header =
+                    HeaderLTM.view
+                        { logoAltText = "Elm logo"
+                        , logoSrc = "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]"
+                        , title = "Advent of Code 2022"
+                        }
+
+                content =
+                    String.replace "{{path}}" path """The path "/{{path}}" does not exist."""
+                        |> Accessibility.text
+            in
+            WrapperHeader.view { header = header, content = content }
 
 
 subscriptions : Model -> Sub Msg
