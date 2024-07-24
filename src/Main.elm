@@ -157,11 +157,7 @@ view model_ =
                         ToggleAccordionItem
 
                 output =
-                    let
-                        contentOrError =
-                            Result.map config.render parsedInput
-                    in
-                    ConditionalContent.view contentOrError Nothing (\_ -> NoOp)
+                    ConditionalContent.view parsedInput Nothing (\_ -> NoOp)
 
                 header =
                     HeaderLTM.view

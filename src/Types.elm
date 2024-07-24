@@ -2,6 +2,7 @@ module Types exposing
     ( Config(..)
     , Markdown
     , Page(..)
+    , ParserConfig
     , fromConfig
     , identifier
     , title
@@ -19,11 +20,9 @@ type alias Markdown =
     String
 
 
-type Config a b
+type Config
     = Config
-        { parser : Parser a
-        , converter : a -> b
-        , render : b -> Html ()
+        { parser : Parser (Html ())
         , defaultInput : String
         , inputLabel : String
         , identifier : String
@@ -32,12 +31,17 @@ type Config a b
         }
 
 
+type alias ParserConfig a b =
+    { inputParser : Parser a
+    , converter : a -> b
+    , render : b -> Html ()
+    }
+
+
 fromConfig :
-    Config a b
+    Config
     ->
-        { parser : Parser a
-        , converter : a -> b
-        , render : b -> Html ()
+        { parser : Parser (Html ())
         , defaultInput : String
         , inputLabel : String
         , identifier : String
@@ -48,11 +52,11 @@ fromConfig (Config config) =
     config
 
 
-title : Config a b -> String
+title : Config -> String
 title (Config config) =
     config.title
 
 
-identifier : Config a b -> String
+identifier : Config -> String
 identifier (Config config) =
     config.identifier

@@ -21,18 +21,26 @@ import Parser
 import Types exposing (Config(..))
 
 
-config : Config Int Int
+config : Config
 config =
     Config
-        { parser = parseTotalScore
-        , converter = identity
-        , render = render
+        { parser =
+            parserConfig.inputParser
+                |> Parser.map (identity >> render)
         , defaultInput = defaultData
         , inputLabel = "Enter the input data (Rows of A|B|C space X|Y|Z):"
         , identifier = "rock-paper-scissors"
         , title = "Rock paper scissors"
         , description = "Hello **World**"
         }
+
+
+parserConfig : Types.ParserConfig Int Int
+parserConfig =
+    { inputParser = parseTotalScore
+    , converter = identity
+    , render = render
+    }
 
 
 defaultData =

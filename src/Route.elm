@@ -22,7 +22,7 @@ pageAndPath =
     [ ( RockPaperScissors, Types.identifier RockPaperScissors.config ) ]
 
 
-pageToConfig : Page -> Config Int Int
+pageToConfig : Page -> Config
 pageToConfig page =
     case page of
         RockPaperScissors ->
