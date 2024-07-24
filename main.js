@@ -12,6 +12,10 @@ if (process.env.NODE_ENV === "development") {
 const root = document.querySelector("#app div");
 const app = Elm.Main.init({ flags: location.href, node: root });
 
+/* Manage urls using Browser.element
+ https://github.com/elm/browser/blob/1.0.2/notes/navigation-in-elements.md */
+
+
 // Inform app of browser navigation (the BACK and FORWARD buttons)
 window.addEventListener('popstate', function () {
     app.ports.onUrlChange.send(location.href);

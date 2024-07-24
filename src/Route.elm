@@ -1,6 +1,5 @@
 module Route exposing (..)
 
-import Html exposing (a)
 import Maybe.Extra as Maybe
 import Page.RockPaperScissors as RockPaperScissors
 import Types exposing (Config)
@@ -56,10 +55,9 @@ toRoute string =
             )
 
 
-
--- pageToPath : Page -> String
--- pageToPath page =
---     pageAndPath
---         |> List.filter (\( page_, _ ) -> page_ == page)
---         |> List.head
---         |> Maybe.unwrap "" Tuple.second
+pageToPath : Page -> String
+pageToPath page =
+    pageAndPath
+        |> List.filter (\( page_, _ ) -> page_ == page)
+        |> List.head
+        |> Maybe.unwrap "" Tuple.second

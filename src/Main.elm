@@ -10,6 +10,7 @@ import Helper.ParserExtra exposing (deadEndsToString)
 import Layouts.WrapperHeader as WrapperHeader
 import Layouts.WrapperHeaderSidebar as WrapperHeaderSidebar
 import Markdown
+import Page.Index
 import Page.RockPaperScissors
 import Parser
 import Route exposing (Page(..), Route(..))
@@ -181,7 +182,7 @@ view model_ =
                         }
 
                 content =
-                    Accessibility.text "Hello"
+                    Page.Index.view Nothing
             in
             WrapperHeader.view { header = header, content = content }
 
