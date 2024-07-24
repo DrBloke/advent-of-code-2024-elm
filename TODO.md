@@ -1,4 +1,5 @@
 # To do
+* Index line 12: make label same as title. change Route.pageAndPath to be Route.pagePathTitle
 * Multiple configs 1h (multiple pages)
 * Multiple outputs 1h
 * stdOut output to enable copy paste (maybe) 1h using string will help with string parsing below.

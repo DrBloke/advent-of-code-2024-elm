@@ -19,7 +19,7 @@ type Page
 
 pageAndPath : List ( Page, String )
 pageAndPath =
-    [ ( RockPaperScissors, "rock-paper-scissors" ) ]
+    [ ( RockPaperScissors, Types.identifier RockPaperScissors.config ) ]
 
 
 pageToConfig : Page -> Config Int Int
