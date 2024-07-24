@@ -5,6 +5,7 @@ module Types exposing
     , ParserConfig
     , fromConfig
     , identifier
+    , routePage
     , title
     )
 
@@ -22,7 +23,8 @@ type alias Markdown =
 
 type Config
     = Config
-        { parser : Parser (Html ())
+        { routePage : Page
+        , parser : Parser (Html ())
         , defaultInput : String
         , inputLabel : String
         , identifier : String
@@ -41,7 +43,8 @@ type alias ParserConfig a b =
 fromConfig :
     Config
     ->
-        { parser : Parser (Html ())
+        { routePage : Page
+        , parser : Parser (Html ())
         , defaultInput : String
         , inputLabel : String
         , identifier : String
@@ -60,3 +63,8 @@ title (Config config) =
 identifier : Config -> String
 identifier (Config config) =
     config.identifier
+
+
+routePage : Config -> Page
+routePage (Config config) =
+    config.routePage

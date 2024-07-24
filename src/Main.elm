@@ -13,9 +13,9 @@ import Markdown
 import Page.Index
 import Page.RockPaperScissors
 import Parser
-import Route exposing (Page(..), Route(..))
+import Route exposing (Route(..))
 import Set exposing (Set)
-import Types exposing (Config(..), fromConfig)
+import Types exposing (Config(..), Page(..), fromConfig)
 import Update2 as Update
 
 

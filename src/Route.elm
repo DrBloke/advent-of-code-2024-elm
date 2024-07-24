@@ -2,7 +2,7 @@ module Route exposing (..)
 
 import Maybe.Extra as Maybe
 import Page.RockPaperScissors as RockPaperScissors
-import Types exposing (Config)
+import Types exposing (Config, Page(..))
 import Url
 import Url.Parser exposing (Parser, map, oneOf, parse, string, top)
 
@@ -13,13 +13,9 @@ type Route
     | NotFound String
 
 
-type Page
-    = RockPaperScissors
-
-
-pageAndPath : List ( Page, String )
-pageAndPath =
-    [ ( RockPaperScissors, Types.identifier RockPaperScissors.config ) ]
+allConfigs : List Types.Config
+allConfigs =
+    [ RockPaperScissors.config ]
 
 
 pageToConfig : Page -> Config
@@ -31,10 +27,10 @@ pageToConfig page =
 
 pathToRoute : String -> Route
 pathToRoute path =
-    pageAndPath
-        |> List.filter (\( _, path_ ) -> path_ == path)
+    allConfigs
+        |> List.filter (\config -> Types.identifier config == path)
         |> List.head
-        |> Maybe.unwrap (NotFound path) (Tuple.first >> Route)
+        |> (\config -> Maybe.unwrap (NotFound path) (Types.routePage >> Route) config)
 
 
 route : Parser (Route -> Route) Route
@@ -57,7 +53,7 @@ toRoute string =
 
 pageToPath : Page -> String
 pageToPath page =
-    pageAndPath
-        |> List.filter (\( page_, _ ) -> page_ == page)
+    allConfigs
+        |> List.filter (\config -> Types.routePage config == page)
         |> List.head
-        |> Maybe.unwrap "" Tuple.second
+        |> (\config -> Maybe.unwrap "" Types.identifier config)

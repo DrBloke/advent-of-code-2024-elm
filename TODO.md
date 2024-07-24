@@ -1,5 +1,5 @@
 # To do
-* Index line 12: make label same as title. change Route.pageAndPath to be Route.pagePathTitle
+* I don't think Main init needs to case on each page now. It can be deduced from Config
 * Multiple configs 1h (multiple pages)
 * Multiple outputs 1h
 * stdOut output to enable copy paste (maybe) 1h using string will help with string parsing below.
