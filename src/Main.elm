@@ -189,7 +189,8 @@ view model_ =
 
                 content =
                     String.replace "{{path}}" path """The path "/{{path}}" does not exist."""
-                        |> Accessibility.text
+                        |> Just
+                        |> Page.Index.view
             in
             WrapperHeader.view { header = header, content = content }
 

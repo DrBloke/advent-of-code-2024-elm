@@ -1,9 +1,8 @@
 # To do
-* I don't think Main init needs to case on each page now. It can be deduced from Config
 * Menu
 * Multiple configs 1h (multiple pages)
+* string output to enable copy paste (maybe) 1h using string will help with string parsing below.
 * Multiple outputs 1h
-* stdOut output to enable copy paste (maybe) 1h using string will help with string parsing below.
 * Cache input data so persists when switching page - local storage
 * Implement as command line tool    
 
@@ -14,7 +13,5 @@
 * Integration with Node to handle file IO
 
 * Sort out icons
-* routing (maybe file-based, unless can use config)
 * Keyboard accessibility of accordion
-* Route suggester if typo
 * Use Vite asset handling to import file

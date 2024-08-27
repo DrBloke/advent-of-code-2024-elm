@@ -13,4 +13,10 @@ import Html.Attributes as Attributes
 view : { title : String, logoAltText : String, logoSrc : String } -> Html msg
 view { title, logoAltText, logoSrc } =
     Html.div [ Attributes.class "header-with-logo-title-menu" ]
-        [ Html.img logoAltText [ Attributes.width 30, Attributes.height 30, Attributes.src logoSrc ], Html.h1 [] [ Html.text title ] ]
+        [ Html.img logoAltText
+            [ Attributes.width 30
+            , Attributes.height 30
+            , Attributes.src logoSrc
+            ]
+        , Html.h1 [] [ Html.text title ]
+        ]

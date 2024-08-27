@@ -26,7 +26,7 @@ config =
     Config
         { parser =
             parserConfig.inputParser
-                |> Parser.map (identity >> render)
+                |> Parser.map (parserConfig.converter >> render)
         , defaultInput = defaultData
         , inputLabel = "Enter the input data (Rows of A|B|C space X|Y|Z):"
         , identifier = "rock-paper-scissors"
