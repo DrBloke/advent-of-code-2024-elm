@@ -8,7 +8,7 @@ import Url.Parser exposing (Parser, map, oneOf, parse, string, top)
 
 
 type Route
-    = Route Page
+    = Route Config
     | Index
     | NotFound String
 
@@ -18,11 +18,12 @@ allConfigs =
     [ RockPaperScissors.config ]
 
 
-pageToConfig : Page -> Config
-pageToConfig page =
-    case page of
-        RockPaperScissors ->
-            RockPaperScissors.config
+
+-- pageToConfig : Page -> Config
+-- pageToConfig page =
+--     case page of
+--         RockPaperScissors ->
+--             RockPaperScissors.config
 
 
 pathToRoute : String -> Route
@@ -30,7 +31,7 @@ pathToRoute path =
     allConfigs
         |> List.filter (\config -> Types.identifier config == path)
         |> List.head
-        |> (\config -> Maybe.unwrap (NotFound path) (Types.routePage >> Route) config)
+        |> (\config -> Maybe.unwrap (NotFound path) Route config)
 
 
 route : Parser (Route -> Route) Route

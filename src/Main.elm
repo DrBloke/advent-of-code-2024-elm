@@ -33,7 +33,7 @@ main =
 
 type Model
     = PageModel
-        { page : Page
+        { pageConfig : Config
         , inputData : String
         , expandedItems : Set String
         }
@@ -44,14 +44,11 @@ type Model
 init : String -> ( Model, Cmd Msg )
 init url =
     case Route.toRoute url of
-        Route RockPaperScissors ->
+        Route config ->
             Update.pure
                 (PageModel
-                    { page = RockPaperScissors
-                    , inputData =
-                        Page.RockPaperScissors.config
-                            |> fromConfig
-                            |> .defaultInput
+                    { pageConfig = config
+                    , inputData = Types.defaultInput config
                     , expandedItems = Set.fromList [ "input-data" ]
                     }
                 )
@@ -125,11 +122,8 @@ view model_ =
     case model_ of
         PageModel model ->
             let
-                wrappedConfig =
-                    Route.pageToConfig model.page
-
                 config =
-                    Types.fromConfig wrappedConfig
+                    Types.fromConfig model.pageConfig
 
                 parsedInput =
                     Parser.run config.parser model.inputData

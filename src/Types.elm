@@ -3,6 +3,7 @@ module Types exposing
     , Markdown
     , Page(..)
     , ParserConfig
+    , defaultInput
     , fromConfig
     , identifier
     , routePage
@@ -68,3 +69,8 @@ identifier (Config config) =
 routePage : Config -> Page
 routePage (Config config) =
     config.routePage
+
+
+defaultInput : Config -> String
+defaultInput (Config config) =
+    config.defaultInput
