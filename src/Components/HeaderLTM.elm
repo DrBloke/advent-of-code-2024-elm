@@ -7,7 +7,7 @@ import Html.Attributes as Attributes
 
 
 -- TODO: menu. Will be a msg passed in
--- A Header with Logo, Tile and menu burger
+-- A Header with Logo, Title and menu burger
 
 
 view : { title : String, logoAltText : String, logoSrc : String } -> Html msg

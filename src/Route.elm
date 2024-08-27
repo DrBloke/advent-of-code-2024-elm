@@ -2,13 +2,13 @@ module Route exposing (..)
 
 import Maybe.Extra as Maybe
 import Page.RockPaperScissors as RockPaperScissors
-import Types exposing (Config, Page(..))
+import Types exposing (Config)
 import Url
 import Url.Parser exposing (Parser, map, oneOf, parse, string, top)
 
 
 type Route
-    = Route Config
+    = Page Config
     | Index
     | NotFound String
 
@@ -18,20 +18,12 @@ allConfigs =
     [ RockPaperScissors.config ]
 
 
-
--- pageToConfig : Page -> Config
--- pageToConfig page =
---     case page of
---         RockPaperScissors ->
---             RockPaperScissors.config
-
-
 pathToRoute : String -> Route
 pathToRoute path =
     allConfigs
         |> List.filter (\config -> Types.identifier config == path)
         |> List.head
-        |> (\config -> Maybe.unwrap (NotFound path) Route config)
+        |> (\config -> Maybe.unwrap (NotFound path) Page config)
 
 
 route : Parser (Route -> Route) Route
@@ -50,11 +42,3 @@ toRoute string =
             (\url ->
                 Maybe.withDefault Index (parse route url)
             )
-
-
-pageToPath : Page -> String
-pageToPath page =
-    allConfigs
-        |> List.filter (\config -> Types.routePage config == page)
-        |> List.head
-        |> (\config -> Maybe.unwrap "" Types.identifier config)

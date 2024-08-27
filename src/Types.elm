@@ -1,21 +1,18 @@
 module Types exposing
     ( Config(..)
     , Markdown
-    , Page(..)
     , ParserConfig
     , defaultInput
+    , description
     , fromConfig
     , identifier
-    , routePage
+    , inputLabel
+    , parser
     , title
     )
 
 import Html exposing (Html)
 import Parser exposing (Parser)
-
-
-type Page
-    = RockPaperScissors
 
 
 type alias Markdown =
@@ -24,8 +21,7 @@ type alias Markdown =
 
 type Config
     = Config
-        { routePage : Page
-        , parser : Parser (Html ())
+        { parser : Parser (Html ())
         , defaultInput : String
         , inputLabel : String
         , identifier : String
@@ -44,8 +40,7 @@ type alias ParserConfig a b =
 fromConfig :
     Config
     ->
-        { routePage : Page
-        , parser : Parser (Html ())
+        { parser : Parser (Html ())
         , defaultInput : String
         , inputLabel : String
         , identifier : String
@@ -66,11 +61,21 @@ identifier (Config config) =
     config.identifier
 
 
-routePage : Config -> Page
-routePage (Config config) =
-    config.routePage
-
-
 defaultInput : Config -> String
 defaultInput (Config config) =
     config.defaultInput
+
+
+parser : Config -> Parser (Html ())
+parser (Config config) =
+    config.parser
+
+
+description : Config -> Markdown
+description (Config config) =
+    config.description
+
+
+inputLabel : Config -> String
+inputLabel (Config config) =
+    config.inputLabel

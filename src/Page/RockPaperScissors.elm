@@ -18,14 +18,13 @@ import Parser
         , succeed
         , symbol
         )
-import Types exposing (Config(..), Page(..))
+import Types exposing (Config(..))
 
 
 config : Config
 config =
     Config
-        { routePage = RockPaperScissors
-        , parser =
+        { parser =
             parserConfig.inputParser
                 |> Parser.map (identity >> render)
         , defaultInput = defaultData

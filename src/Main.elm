@@ -11,11 +11,10 @@ import Layouts.WrapperHeader as WrapperHeader
 import Layouts.WrapperHeaderSidebar as WrapperHeaderSidebar
 import Markdown
 import Page.Index
-import Page.RockPaperScissors
 import Parser
 import Route exposing (Route(..))
 import Set exposing (Set)
-import Types exposing (Config(..), Page(..), fromConfig)
+import Types exposing (Config(..))
 import Update2 as Update
 
 
@@ -23,8 +22,14 @@ import Update2 as Update
 -- MAIN
 
 
+main : Program String Model Msg
 main =
-    Browser.element { init = init, update = update, view = view, subscriptions = subscriptions }
+    Browser.element
+        { init = init
+        , update = update
+        , view = view
+        , subscriptions = subscriptions
+        }
 
 
 
@@ -44,7 +49,7 @@ type Model
 init : String -> ( Model, Cmd Msg )
 init url =
     case Route.toRoute url of
-        Route config ->
+        Page config ->
             Update.pure
                 (PageModel
                     { pageConfig = config
@@ -122,25 +127,22 @@ view model_ =
     case model_ of
         PageModel model ->
             let
-                config =
-                    Types.fromConfig model.pageConfig
-
                 parsedInput =
-                    Parser.run config.parser model.inputData
+                    Parser.run (Types.parser model.pageConfig) model.inputData
                         |> Result.mapError deadEndsToString
 
                 accordion =
                     Accordion.view
                         [ { identifier = "description"
                           , label = "The problem"
-                          , content = Markdown.toHtml [] config.description
+                          , content = Markdown.toHtml [] (Types.description model.pageConfig)
                           }
                         , { identifier = "input-data"
                           , label = "Input data"
                           , content =
                                 Textarea.view
-                                    { identifier = config.identifier
-                                    , inputLabel = config.inputLabel
+                                    { identifier = Types.identifier model.pageConfig
+                                    , inputLabel = Types.inputLabel model.pageConfig
                                     }
                                     model.inputData
                                     parsedInput
@@ -157,7 +159,7 @@ view model_ =
                     HeaderLTM.view
                         { logoAltText = "Elm logo"
                         , logoSrc = "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]"
-                        , title = config.title
+                        , title = Types.title model.pageConfig
                         }
             in
             WrapperHeaderSidebar.view { header = header, sidebar = accordion, notSidebar = output }
