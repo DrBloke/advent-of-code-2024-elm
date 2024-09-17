@@ -1,6 +1,7 @@
 module Components.ConditionalContent exposing (view)
 
 import Accessibility as Html exposing (Html)
+import Browser.Dom exposing (Error)
 import Html.Attributes as Attributes
 
 
@@ -10,10 +11,14 @@ view contentOrError errorMessage msg =
         content =
             case contentOrError of
                 Ok html ->
-                    Html.map msg html
+                    [ Html.map msg html ]
 
-                Err _ ->
-                    Maybe.withDefault "The input data is invalid" errorMessage
+                Err error ->
+                    [ Maybe.withDefault "The input data is invalid:" errorMessage
                         |> Html.text
+                        |> List.singleton
+                        |> Html.div []
+                    , Html.div [] [ Html.text error ]
+                    ]
     in
-    Html.div [ Attributes.class "conditional-content" ] [ content ]
+    Html.div [ Attributes.class "conditional-content" ] content

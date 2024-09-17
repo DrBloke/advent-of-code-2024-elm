@@ -3,7 +3,6 @@ port module Main exposing (..)
 import Accessibility exposing (Html)
 import Browser
 import Components.Accordion as Accordion
-import Components.Button as Button
 import Components.ConditionalContent as ConditionalContent
 import Components.HeaderLTM as HeaderLTM
 import Components.Textarea as Textarea
@@ -156,19 +155,8 @@ view model_ =
                 output =
                     ConditionalContent.view parsedInput Nothing (\_ -> NoOp)
 
-                headerButton =
-                    { onClick = UrlChanged ""
-                    , label = Button.TextOnly "Menu"
-                    }
-                        |> Button.configuration
-                        |> Button.asComponent
-
-                headerConfig =
-                    { button = headerButton }
-                        |> HeaderLTM.configuration
-
                 header =
-                    HeaderLTM.view headerConfig
+                    HeaderLTM.view
                         { logoAltText = "Elm logo"
                         , logoSrc = "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]"
                         , title = Types.title model.pageConfig
@@ -178,19 +166,8 @@ view model_ =
 
         IndexModel ->
             let
-                headerButton =
-                    { onClick = UrlChanged ""
-                    , label = Button.TextOnly "Menu"
-                    }
-                        |> Button.configuration
-                        |> Button.asComponent
-
-                headerConfig =
-                    { button = headerButton }
-                        |> HeaderLTM.configuration
-
                 header =
-                    HeaderLTM.view headerConfig
+                    HeaderLTM.view
                         { logoAltText = "Elm logo"
                         , logoSrc = "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]"
                         , title = "Advent of Code 2022"
@@ -203,19 +180,8 @@ view model_ =
 
         NotFoundModel path ->
             let
-                headerButton =
-                    { onClick = UrlChanged ""
-                    , label = Button.TextOnly "Menu"
-                    }
-                        |> Button.configuration
-                        |> Button.asComponent
-
-                headerConfig =
-                    { button = headerButton }
-                        |> HeaderLTM.configuration
-
                 header =
-                    HeaderLTM.view headerConfig
+                    HeaderLTM.view
                         { logoAltText = "Elm logo"
                         , logoSrc = "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]"
                         , title = "Advent of Code 2022"

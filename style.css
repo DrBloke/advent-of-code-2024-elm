@@ -200,3 +200,9 @@ textarea:focus:invalid {
   height: 24px;
   color: inherit;
 }
+
+.conditional-content {
+  display: flex;
+  flex-direction: column;
+  /* gap: 20px; */
+}
