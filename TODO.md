@@ -1,13 +1,18 @@
 # To do
+
+## Phase 1 - Advent of code problem only
 * Menu
 * Multiple configs 1h (multiple pages)
 * string output to enable copy paste (maybe) 1h using string will help with string parsing below.
-* Multiple outputs 1h
 * Cache input data so persists when switching page - local storage
+* Add pages with command line
+
+## Phase 2
+* Multiple outputs 1h
+* Multiple inputs combined into one 2h
 * Implement as command line tool    
 
 
-* Multiple inputs combined into one 2h
 * Use of string parse functions, e.g. camelCase  2h
 * Loop parser 4h
 * Integration with Node to handle file IO
