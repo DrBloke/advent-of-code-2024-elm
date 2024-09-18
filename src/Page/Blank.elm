@@ -9,10 +9,14 @@ import Parser
         , Parser
         , Step(..)
         , Trailing(..)
+        , andThen
+        , chompIf
         , chompUntil
         , chompWhile
         , end
         , float
+        , getChompedString
+        , getCol
         , int
         , keyword
         , loop
@@ -42,9 +46,9 @@ config =
         }
 
 
-parserConfig : Types.ParserConfig (List Int) (List Int)
+parserConfig : Types.ParserConfig (List (List Int)) (List (List Int))
 parserConfig =
-    { inputParser = parseLine
+    { inputParser = parseInput
     , converter = identity
     , render = render
     }
@@ -57,52 +61,70 @@ defaultData =
 """
 
 
+parseInput : Parser (List (List Int))
+parseInput =
+    loop [] blockHelper
+        |> andThen
+            (\l ->
+                if List.isEmpty l then
+                    problem "Expecting lists of integers"
+
+                else
+                    succeed l
+            )
+
+
+blockHelper : List (List Int) -> Parser (Step (List (List Int)) (List (List Int)))
+blockHelper lines =
+    oneOf
+        [ succeed (\line -> Loop (line :: lines))
+            |. chompWhile (\c -> c == ' ' || c == '\t' || c == '\n')
+            |= parseLine
+            |. chompWhile (\c -> c == ' ' || c == '\t' || c == '\n')
+        , succeed ()
+            |. end
+            |> map (\_ -> Done (List.reverse lines))
+        ]
+
+
 parseLine : Parser (List Int)
 parseLine =
     loop [] lineHelper
+        |> andThen
+            (\l ->
+                if List.isEmpty l then
+                    problem "Expecting integers"
+
+                else
+                    succeed l
+            )
 
 
 lineHelper : List Int -> Parser (Step (List Int) (List Int))
 lineHelper ints =
     oneOf
-        [ succeed (\int -> Loop (int :: ints))
+        [ succeed (\i -> Loop (i :: ints))
             |= int
-            |. chompWhile (\c -> c == ' ')
-        , succeed ()
-            |> map (\_ -> Done (List.reverse ints))
-        , problem "what?"
+            |. chompWhile (\c -> c == ' ' || c == '\t')
+        , succeed <| Done (List.reverse ints)
         ]
 
 
-
--- parseLine : Parser (List Int)
--- parseLine =
---     -- sequence
---     --     { start = ""
---     --     , separator = "\n"
---     --     , end = ""
---     --     , spaces = spaces
---     --     , item = int
---     --     , trailing = Optional
---     --     }
---     succeed
--- render : List (List Int) -> Html ()
--- render =
---     List.map
---         (\ints ->
---             let
---                 renderedInts =
---                     List.map (\int -> String.fromInt int)
---                         >> String.join " "
---                         >> Html.text
---             in
---             div [] [ text <| "The max of " ++ renderedInts ints ++ "is " ++ max ints ]
---         )
---         >> Html.div []
-
-
-render : List Int -> Html ()
+render : List (List Int) -> Html ()
 render =
-    List.map (\int -> String.fromInt int)
-        >> String.join " "
-        >> Html.text
+    List.map
+        (\ints ->
+            let
+                renderedInts =
+                    List.map (\int -> String.fromInt int)
+                        >> String.join " "
+            in
+            div []
+                [ text <|
+                    "The max of "
+                        ++ renderedInts ints
+                        ++ " is "
+                        ++ (Maybe.map String.fromInt (List.maximum ints) |> Maybe.withDefault "")
+                ]
+        )
+        >> Html.div []

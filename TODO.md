@@ -1,7 +1,6 @@
 # To do
 
 ## Phase 1 - Advent of code problem only
-* Multiple configs 1h (multiple pages)
 * string output to enable copy paste (maybe) 1h using string will help with string parsing below.
 * Cache input data so persists when switching page - local storage
 * Add pages with command line
@@ -13,7 +12,8 @@
 
 
 * Use of string parse functions, e.g. camelCase  2h
-* Loop parser 4h
+* Object parser
+* Loop parser 4h on list fields of the above.
 * Integration with Node to handle file IO
 
 * Sort out icons
@@ -22,7 +22,7 @@
 
 * Make a component library with Storybook
 
-## Additions for 
+## Additions for Advent of Code
 * Menu
 * Show code
-* Remove Html inports
+* Remove Html imports
