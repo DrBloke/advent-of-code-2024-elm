@@ -1,9 +1,11 @@
 # To do
 
 ## Phase 1 - Advent of code problem only
-* string output to enable copy paste (maybe) 1h using string will help with string parsing below.
 * Cache input data so persists when switching page - local storage
+* string output to enable copy paste (maybe) 1h using string will help with string parsing below.
+* Show code
 * Add pages with command line
+* Page title
 
 ## Phase 2
 * Multiple outputs 1h
@@ -24,5 +26,4 @@
 
 ## Additions for Advent of Code
 * Menu
-* Show code
 * Remove Html imports
