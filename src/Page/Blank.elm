@@ -104,6 +104,7 @@ lineHelper : List Int -> Parser (Step (List Int) (List Int))
 lineHelper ints =
     oneOf
         [ succeed (\i -> Loop (i :: ints))
+            |. chompWhile (\c -> c == ' ' || c == '\t')
             |= int
             |. chompWhile (\c -> c == ' ' || c == '\t')
         , succeed <| Done (List.reverse ints)
