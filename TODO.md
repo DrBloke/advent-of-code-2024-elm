@@ -1,7 +1,7 @@
 # To do
 
 ## Phase 1 - Advent of code problem only
-* Cache input data so persists when switching page - local storage
+* Reset button for initial data
 * string output to enable copy paste (maybe) 1h using string will help with string parsing below.
 * Show code
 * Add pages with command line
@@ -11,6 +11,9 @@
 * Multiple outputs 1h
 * Multiple inputs combined into one 2h
 * Implement as command line tool    
+
+* Make renderer interactive
+* Make input fields conditional on previous answers
 
 
 * Use of string parse functions, e.g. camelCase  2h
