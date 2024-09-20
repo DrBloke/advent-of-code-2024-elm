@@ -100,10 +100,6 @@ update msg model_ =
         PageModel model ->
             case msg of
                 UrlChanged page ->
-                    let
-                        _ =
-                            Debug.log "pagePage" page
-                    in
                     init page
 
                 TextareaMsg value ->
@@ -133,10 +129,6 @@ update msg model_ =
         IndexModel ->
             case msg of
                 UrlChanged page ->
-                    let
-                        _ =
-                            Debug.log "index" page
-                    in
                     init page
 
                 _ ->

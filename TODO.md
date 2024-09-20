@@ -6,7 +6,6 @@
 * Show code
 * Use pushUrl for changing pages more smoothly
 * Add pages with command line
-* Page title
 
 ## Phase 2
 * Multiple outputs 1h
