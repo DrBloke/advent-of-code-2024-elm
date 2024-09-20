@@ -7,9 +7,12 @@ import Components.ConditionalContent as ConditionalContent
 import Components.HeaderLTM as HeaderLTM
 import Components.Textarea as Textarea
 import Helper.ParserExtra exposing (deadEndsToString)
+import Json.Decode as Decode
+import Json.Encode as Encode
 import Layouts.WrapperHeader as WrapperHeader
 import Layouts.WrapperHeaderSidebar as WrapperHeaderSidebar
 import Markdown
+import Maybe.Extra as Maybe
 import Page.Index
 import Parser
 import Route exposing (Route(..))
@@ -22,7 +25,7 @@ import Update2 as Update
 -- MAIN
 
 
-main : Program String Model Msg
+main : Program Encode.Value Model Msg
 main =
     Browser.element
         { init = init
@@ -46,8 +49,17 @@ type Model
     | NotFoundModel String
 
 
-init : String -> ( Model, Cmd Msg )
-init url =
+init : Encode.Value -> ( Model, Cmd Msg )
+init flags =
+    let
+        { url } =
+            case Decode.decodeValue decode flags of
+                Ok flagsJson ->
+                    flagsJson
+
+                Err _ ->
+                    { url = "", storedData = Nothing }
+    in
     case Route.toRoute url of
         Page config ->
             Update.pure
@@ -70,7 +82,7 @@ init url =
 
 
 type Msg
-    = UrlChanged String
+    = UrlChanged Encode.Value
     | TextareaMsg String
     | ToggleAccordionItem String
     | NoOp
@@ -201,10 +213,35 @@ subscriptions _ =
 
 
 
+-- JSON ENCODE/DECODE
+
+
+type alias Flags =
+    { url : String
+    , storedData : Maybe String
+    }
+
+
+encode : Flags -> Encode.Value
+encode flags =
+    Encode.object
+        [ ( "url", Encode.string flags.url )
+        , ( "storedData", Maybe.unwrap Encode.null Encode.string flags.storedData )
+        ]
+
+
+decode : Decode.Decoder Flags
+decode =
+    Decode.map2 Flags
+        (Decode.field "url" Decode.string)
+        (Decode.field "storedData" Decode.string |> Decode.maybe)
+
+
+
 -- PORTS
 
 
-port onUrlChange : (String -> msg) -> Sub msg
+port onUrlChange : (Encode.Value -> msg) -> Sub msg
 
 
 port pushUrl : String -> Cmd msg
