@@ -4,6 +4,7 @@
 * Reset button for initial data
 * string output to enable copy paste (maybe) 1h using string will help with string parsing below.
 * Show code
+* Use pushUrl for changing pages more smoothly
 * Add pages with command line
 * Page title
 

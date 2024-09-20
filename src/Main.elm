@@ -55,7 +55,7 @@ init flags =
         { url, storedData } =
             case Decode.decodeValue decode flags of
                 Ok flagsJson ->
-                    flagsJson |> Debug.log "flags"
+                    flagsJson
 
                 Err _ ->
                     { url = "", storedData = Nothing }
@@ -69,6 +69,7 @@ init flags =
                     , expandedItems = Set.fromList [ "input-data" ]
                     }
                 )
+                |> addCmd (setTitle (Types.title config))
 
         Index ->
             Update.pure IndexModel
@@ -282,3 +283,6 @@ port pushUrl : Encode.Value -> Cmd msg
 
 
 port setStorage : Encode.Value -> Cmd msg
+
+
+port setTitle : String -> Cmd msg

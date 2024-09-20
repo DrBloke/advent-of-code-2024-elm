@@ -37,11 +37,11 @@ app.ports.setStorage.subscribe(function ({ pathName, data }) {
 
 // Inform app of browser navigation (the BACK and FORWARD buttons)
 window.addEventListener('popstate', function () {
-    const field = location.pathname.slice(1);
-    const storedData = localStorage.getItem(field);
-    console.log("storedData", storedData)
-    // const flags = storedData ? JSON.parse(storedData) : null;
     app.ports.onUrlChange.send({ url: location.href, storedData });
+});
+
+app.ports.setTitle.subscribe(function (title) {
+    document.title = title
 });
 
 // Change the URL upon request, inform app of the change.
