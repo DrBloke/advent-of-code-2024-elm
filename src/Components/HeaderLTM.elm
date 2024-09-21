@@ -1,6 +1,7 @@
 module Components.HeaderLTM exposing (view)
 
 import Accessibility as Html exposing (Html)
+import Components.Button as Button
 import Helper.HtmlExtra as Html
 import Html.Attributes as Attributes
 
@@ -9,8 +10,8 @@ import Html.Attributes as Attributes
 -- A Header with Logo, Title and menu burger
 
 
-view : { title : String, logoAltText : String, logoSrc : String } -> Html msg
-view { title, logoAltText, logoSrc } =
+view : { title : String, logoAltText : String, logoSrc : String, pushUrl : String -> msg } -> Html msg
+view { title, logoAltText, logoSrc, pushUrl } =
     Html.div [ Attributes.class "header-with-logo-title-menu" ]
         [ Html.img logoAltText
             [ Attributes.width 30
@@ -18,5 +19,6 @@ view { title, logoAltText, logoSrc } =
             , Attributes.src logoSrc
             ]
         , Html.h1 [] [ Html.text title ]
-        , Html.a [ Attributes.href "/" ] [ Html.text "Menu" ]
+        , Button.configuration { onClick = pushUrl "/", label = Button.Link "Menu" }
+            |> Button.view
         ]

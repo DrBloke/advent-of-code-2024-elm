@@ -1,6 +1,7 @@
 # To do
 
 ## Phase 1 - Advent of code problem only
+* Something is off wich changing pages. Race condition? Wrong pages input is shown and local storage gets reset
 * Reset button for initial data
 * string output to enable copy paste (maybe) 1h using string will help with string parsing below.
 * Show code

@@ -84,6 +84,7 @@ init flags =
 
 type Msg
     = UrlChanged Encode.Value
+    | PushUrl String
     | TextareaMsg String
     | ToggleAccordionItem String
     | NoOp
@@ -101,6 +102,10 @@ update msg model_ =
             case msg of
                 UrlChanged page ->
                     init page
+
+                PushUrl url ->
+                    Update.pure IndexModel
+                        |> addCmd (pushUrl url)
 
                 TextareaMsg value ->
                     Update.pure (PageModel { model | inputData = value })
@@ -131,6 +136,10 @@ update msg model_ =
                 UrlChanged page ->
                     init page
 
+                PushUrl url ->
+                    Update.pure IndexModel
+                        |> addCmd (pushUrl url)
+
                 _ ->
                     Update.pure IndexModel
 
@@ -138,6 +147,10 @@ update msg model_ =
             case msg of
                 UrlChanged page ->
                     init page
+
+                PushUrl url ->
+                    Update.pure IndexModel
+                        |> addCmd (pushUrl url)
 
                 _ ->
                     Update.pure (NotFoundModel path)
@@ -149,6 +162,15 @@ update msg model_ =
 
 view : Model -> Html Msg
 view model_ =
+    let
+        header title pushUrl_ =
+            HeaderLTM.view
+                { logoAltText = "Elm logo"
+                , logoSrc = "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]"
+                , title = title
+                , pushUrl = pushUrl_
+                }
+    in
     case model_ of
         PageModel model ->
             let
@@ -179,45 +201,24 @@ view model_ =
 
                 output =
                     ConditionalContent.view parsedInput Nothing (\_ -> NoOp)
-
-                header =
-                    HeaderLTM.view
-                        { logoAltText = "Elm logo"
-                        , logoSrc = "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]"
-                        , title = Types.title model.pageConfig
-                        }
             in
-            WrapperHeaderSidebar.view { header = header, sidebar = accordion, notSidebar = output }
+            WrapperHeaderSidebar.view { header = header (Types.title model.pageConfig) PushUrl, sidebar = accordion, notSidebar = output }
 
         IndexModel ->
             let
-                header =
-                    HeaderLTM.view
-                        { logoAltText = "Elm logo"
-                        , logoSrc = "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]"
-                        , title = "Advent of Code 2022"
-                        }
-
                 content =
-                    Page.Index.view Nothing
+                    Page.Index.view PushUrl Nothing
             in
-            WrapperHeader.view { header = header, content = content }
+            WrapperHeader.view { header = header "Advent of Code 2022" PushUrl, content = content }
 
         NotFoundModel path ->
             let
-                header =
-                    HeaderLTM.view
-                        { logoAltText = "Elm logo"
-                        , logoSrc = "[VITE_PLUGIN_ELM_ASSET:./assets/Elm_logo.svg]"
-                        , title = "Advent of Code 2022"
-                        }
-
                 content =
                     String.replace "{{path}}" path """The path "/{{path}}" does not exist."""
                         |> Just
-                        |> Page.Index.view
+                        |> Page.Index.view PushUrl
             in
-            WrapperHeader.view { header = header, content = content }
+            WrapperHeader.view { header = header "Advent of Code 2022" PushUrl, content = content }
 
 
 subscriptions : Model -> Sub Msg
@@ -271,7 +272,7 @@ decode =
 port onUrlChange : (Encode.Value -> msg) -> Sub msg
 
 
-port pushUrl : Encode.Value -> Cmd msg
+port pushUrl : String -> Cmd msg
 
 
 port setStorage : Encode.Value -> Cmd msg

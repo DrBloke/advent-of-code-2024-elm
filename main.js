@@ -11,9 +11,9 @@ if (process.env.NODE_ENV === "development") {
 
 
 
-const field = location.pathname.slice(1);
-const storedDataRaw = localStorage.getItem(field);
-const storedData = storedDataRaw ? JSON.parse(storedDataRaw) : null;
+let field = location.pathname.slice(1);
+let storedDataRaw = localStorage.getItem(field);
+let storedData = storedDataRaw ? JSON.parse(storedDataRaw) : null;
 
 const root = document.querySelector("#app div");
 const app = Elm.Main.init({
@@ -29,6 +29,8 @@ const app = Elm.Main.init({
 // https://github.com/elm-community/js-integration-examples/tree/master/localStorage
 app.ports.setStorage.subscribe(function ({ pathName, data }) {
     localStorage.setItem(pathName, JSON.stringify(data));
+    // storedDataRaw = localStorage.getItem(field);
+    // storedData = storedDataRaw ? JSON.parse(storedDataRaw) : null;
 });
 
 /* Manage urls using Browser.element
@@ -45,7 +47,10 @@ app.ports.setTitle.subscribe(function (title) {
 });
 
 // Change the URL upon request, inform app of the change.
-// app.ports.pushUrl.subscribe(function (url) {
-//     history.pushState({}, '', url);
-//     app.ports.onUrlChange.send(location.href);
-// });
+app.ports.pushUrl.subscribe(function (url) {
+    field = url;
+    storedDataRaw = localStorage.getItem(field);
+    storedData = storedDataRaw ? JSON.parse(storedDataRaw) : null;
+    history.pushState({}, '', url);
+    app.ports.onUrlChange.send({ url: "https://" + location.host + "/" + url, storedData });
+});

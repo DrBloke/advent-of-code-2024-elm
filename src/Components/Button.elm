@@ -7,10 +7,11 @@ module Components.Button exposing
     , view
     )
 
-import Accessibility as Html exposing (Html)
 import Components.Component as Component exposing (Component)
+import Html exposing (Html)
 import Html.Attributes as Attributes
 import Html.Events as Events
+import Json.Decode as Decode
 
 
 type Configuration msg
@@ -36,22 +37,22 @@ configuration config =
 
 type Label
     = TextOnly String
+    | Link String
 
 
 view : Configuration msg -> Html msg
 view (Configuration config) =
-    Html.button
-        [ Events.onClick config.onClick
-        , Attributes.class "button"
-        ]
-        [ labelView config.label ]
+    case config.label of
+        Link label ->
+            Html.a [ Events.preventDefaultOn "click" (Decode.succeed ( config.onClick, True )) ]
+                [ Html.text label ]
 
-
-labelView : Label -> Html msg
-labelView labelConfig =
-    case labelConfig of
-        TextOnly labelText ->
-            Html.text labelText
+        TextOnly label ->
+            Html.button
+                [ Events.onClick config.onClick
+                , Attributes.class "button"
+                ]
+                [ Html.text label ]
 
 
 type alias Button msg =
