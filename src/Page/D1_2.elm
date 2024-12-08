@@ -1,4 +1,4 @@
-module Page.D1_1 exposing (config)
+module Page.D1_2 exposing (config)
 
 import Helper.ParserExtra as Parser exposing (TwoColumnsOfInts)
 import Helper.Render as Render
@@ -14,8 +14,8 @@ config =
                 |> Parser.map (parserConfig.converter >> parserConfig.render)
         , defaultInput = defaultData
         , inputLabel = "Enter the input data"
-        , identifier = "day-1-1"
-        , title = "Day 1.1 - Historian Hysteria"
+        , identifier = "day-1-2"
+        , title = "Day 1.2 - Historian Hysteria"
         , description = problem
         }
 
@@ -90,10 +90,11 @@ Your actual left and right lists contain many location IDs. What is the total di
 
 combineLists : TwoColumnsOfInts -> Int
 combineLists { col1, col2 } =
-    List.map2
-        (\c1 c2 ->
-            abs (c1 - c2)
-        )
-        (List.sort col1)
-        (List.sort col2)
+    col1
+        |> List.map
+            (\val ->
+                List.filter ((==) val) col2
+                    |> List.length
+                    |> (*) val
+            )
         |> List.sum

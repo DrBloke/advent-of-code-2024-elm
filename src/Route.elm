@@ -1,9 +1,10 @@
 module Route exposing (..)
 
 import Maybe.Extra as Maybe
-import Page.Blank as Blank
 import Page.D1_1 as D1_1
-import Page.RockPaperScissors as RockPaperScissors
+import Page.D1_2 as D1_2
+import Page.D2_1 as D2_1
+import Page.D2_2 as D2_2
 import Types exposing (Config)
 import Url
 import Url.Parser exposing (Parser, map, oneOf, parse, string, top)
@@ -17,9 +18,10 @@ type Route
 
 allConfigs : List Types.Config
 allConfigs =
-    [ RockPaperScissors.config
-    , Blank.config
-    , D1_1.config
+    [ D1_1.config
+    , D1_2.config
+    , D2_1.config
+    , D2_2.config
     ]
 
 

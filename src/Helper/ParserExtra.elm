@@ -1,6 +1,7 @@
 module Helper.ParserExtra exposing
     ( TwoColumnsOfInts
     , deadEndsToString
+    , parseListOfListOfInt
     , parseTwoColumnsOfInts
     )
 
@@ -22,37 +23,37 @@ deadEndsToString deadEnds =
                     "Expecting " ++ str ++ "at " ++ position
 
                 Parser.ExpectingInt ->
-                    "ExpectingInt at " ++ position
+                    "Expecting Int at " ++ position
 
                 Parser.ExpectingHex ->
-                    "ExpectingHex at " ++ position
+                    "Expecting Hex at " ++ position
 
                 Parser.ExpectingOctal ->
-                    "ExpectingOctal at " ++ position
+                    "Expecting Octal at " ++ position
 
                 Parser.ExpectingBinary ->
-                    "ExpectingBinary at " ++ position
+                    "Expecting Binary at " ++ position
 
                 Parser.ExpectingFloat ->
-                    "ExpectingFloat at " ++ position
+                    "Expecting Float at " ++ position
 
                 Parser.ExpectingNumber ->
-                    "ExpectingNumber at " ++ position
+                    "Expecting Number at " ++ position
 
                 Parser.ExpectingVariable ->
-                    "ExpectingVariable at " ++ position
+                    "Expecting Variable at " ++ position
 
                 Parser.ExpectingSymbol str ->
-                    "ExpectingSymbol " ++ str ++ " at " ++ position
+                    "Expecting Symbol " ++ str ++ " at " ++ position
 
                 Parser.ExpectingKeyword str ->
-                    "ExpectingKeyword " ++ str ++ " at " ++ position
+                    "Expecting Keyword " ++ str ++ " at " ++ position
 
                 Parser.ExpectingEnd ->
-                    "ExpectingEnd at " ++ position
+                    "Expecting End at " ++ position
 
                 Parser.UnexpectedChar ->
-                    "UnexpectedChar at " ++ position
+                    "Unexpected Char at " ++ position
 
                 Parser.Problem str ->
                     "ProblemString " ++ str ++ " at " ++ position
@@ -61,6 +62,10 @@ deadEndsToString deadEnds =
                     "BadRepeat at " ++ position
     in
     List.foldl (++) "" (List.map deadEndToString deadEnds)
+
+
+
+-- Two columns of Int
 
 
 type alias TwoColumnsOfInts =
@@ -92,3 +97,57 @@ parseLine =
         |= int
         |. chompWhile (\c -> c == ' ' || c == '\t')
         |= int
+
+
+
+-- List of List of Int
+
+
+parseListOfListOfInt : Parser (List (List Int))
+parseListOfListOfInt =
+    loop [] blockHelper
+        |> andThen
+            (\l ->
+                if List.isEmpty l then
+                    problem "Expecting lists of integers"
+
+                else
+                    succeed l
+            )
+
+
+blockHelper : List (List Int) -> Parser (Step (List (List Int)) (List (List Int)))
+blockHelper lines =
+    oneOf
+        [ succeed (\line -> Loop (line :: lines))
+            |. chompWhile (\c -> c == ' ' || c == '\t' || c == '\n')
+            |= parseLineOfInts
+            |. chompWhile (\c -> c == ' ' || c == '\t' || c == '\n')
+        , succeed ()
+            |. end
+            |> map (\_ -> Done (List.reverse lines))
+        ]
+
+
+parseLineOfInts : Parser (List Int)
+parseLineOfInts =
+    loop [] lineHelper
+        |> andThen
+            (\l ->
+                if List.isEmpty l then
+                    problem "Expecting integers"
+
+                else
+                    succeed l
+            )
+
+
+lineHelper : List Int -> Parser (Step (List Int) (List Int))
+lineHelper ints =
+    oneOf
+        [ succeed (\i -> Loop (i :: ints))
+            |. chompWhile (\c -> c == ' ' || c == '\t')
+            |= int
+            |. chompWhile (\c -> c == ' ' || c == '\t')
+        , succeed <| Done (List.reverse ints)
+        ]
