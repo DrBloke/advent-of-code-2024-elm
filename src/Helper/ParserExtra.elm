@@ -106,48 +106,36 @@ parseLine =
 parseListOfListOfInt : Parser (List (List Int))
 parseListOfListOfInt =
     loop [] blockHelper
-        |> andThen
-            (\l ->
-                if List.isEmpty l then
-                    problem "Expecting lists of integers"
-
-                else
-                    succeed l
-            )
 
 
 blockHelper : List (List Int) -> Parser (Step (List (List Int)) (List (List Int)))
 blockHelper lines =
     oneOf
-        [ succeed (\line -> Loop (line :: lines))
-            |. chompWhile (\c -> c == ' ' || c == '\t' || c == '\n')
-            |= parseLineOfInts
-            |. chompWhile (\c -> c == ' ' || c == '\t' || c == '\n')
-        , succeed ()
+        [ succeed (\line -> Done (List.reverse (line :: lines)))
+            |= backtrackable parseLineOfInts
             |. end
-            |> map (\_ -> Done (List.reverse lines))
+        , succeed (\line -> Loop (line :: lines))
+            |= parseLineOfInts
         ]
 
 
 parseLineOfInts : Parser (List Int)
 parseLineOfInts =
     loop [] lineHelper
-        |> andThen
-            (\l ->
-                if List.isEmpty l then
-                    problem "Expecting integers"
-
-                else
-                    succeed l
-            )
 
 
 lineHelper : List Int -> Parser (Step (List Int) (List Int))
 lineHelper ints =
+    -- something not quite right. This allows \n end rather than enforcing end
+    -- Could check the \n is at the end of the string, using getOffset and getSource
     oneOf
-        [ succeed (\i -> Loop (i :: ints))
-            |. chompWhile (\c -> c == ' ' || c == '\t')
+        [ succeed (\i -> Done (List.reverse (i :: ints)))
+            |= backtrackable int
+            |. oneOf
+                [ end
+                , Parser.chompIf (\c -> c == '\n')
+                ]
+        , succeed (\i -> Loop (i :: ints))
             |= int
             |. chompWhile (\c -> c == ' ' || c == '\t')
-        , succeed <| Done (List.reverse ints)
         ]
