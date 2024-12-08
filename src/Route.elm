@@ -2,6 +2,7 @@ module Route exposing (..)
 
 import Maybe.Extra as Maybe
 import Page.Blank as Blank
+import Page.D1_1 as D1_1
 import Page.RockPaperScissors as RockPaperScissors
 import Types exposing (Config)
 import Url
@@ -18,6 +19,7 @@ allConfigs : List Types.Config
 allConfigs =
     [ RockPaperScissors.config
     , Blank.config
+    , D1_1.config
     ]
 
 
