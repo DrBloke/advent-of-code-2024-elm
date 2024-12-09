@@ -5,6 +5,7 @@ import Page.D1_1 as D1_1
 import Page.D1_2 as D1_2
 import Page.D2_1 as D2_1
 import Page.D2_2 as D2_2
+import Page.D3_1 as D3_1
 import Types exposing (Config)
 import Url
 import Url.Parser exposing (Parser, map, oneOf, parse, string, top)
@@ -22,6 +23,7 @@ allConfigs =
     , D1_2.config
     , D2_1.config
     , D2_2.config
+    , D3_1.config
     ]
 
 
