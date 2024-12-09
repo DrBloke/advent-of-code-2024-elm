@@ -1,10 +1,12 @@
 module Page.D4_1 exposing (config)
 
+import Dict exposing (Dict)
 import Helper.ParserExtra as Parser
 import Helper.Render as Render
 import List.Extra as List
 import Parser as Parser exposing (..)
 import Types exposing (Config(..), Markdown)
+import Url.Parser exposing (parse)
 
 
 config : Config
@@ -21,9 +23,16 @@ config =
         }
 
 
-parserConfig : Types.ParserConfig (List String) Int
+type Letter
+    = X
+    | M
+    | A
+    | S
+
+
+parserConfig : Types.ParserConfig Grid Int
 parserConfig =
-    { inputParser = Parser.parseListOfStrings
+    { inputParser = parseGrid
     , converter = numberOfXmas
     , render = Render.intWithMessage "Number of Xmas"
     }
@@ -88,8 +97,102 @@ Take a look at the little Elf's word search. How many times does XMAS appear?
 """
 
 
-numberOfXmas : List String -> Int
-numberOfXmas horizontalForwards =
+type alias Grid =
+    Dict ( Int, Int ) Letter
+
+
+parseGrid : Parser Grid
+parseGrid =
+    loop Dict.empty parseGridRows
+
+
+parseGridRows : Grid -> Parser (Step Grid Grid)
+parseGridRows grid =
+    oneOf
+        [ succeed
+            (\gridElement ->
+                Done <| Dict.union gridElement grid
+            )
+            |= backtrackable parseGridRow
+            |. end
+        , succeed
+            (\gridElement ->
+                Loop <| Dict.union gridElement grid
+            )
+            |= parseGridRow
+        ]
+
+
+parseGridRow : Parser Grid
+parseGridRow =
+    loop Dict.empty parseGridRowHelper
+
+
+parseGridRowHelper : Grid -> Parser (Step Grid Grid)
+parseGridRowHelper grid =
+    oneOf
+        [ succeed
+            (\gridElement ->
+                Done <| Dict.union gridElement grid
+            )
+            |= backtrackable parseGridChar
+            |. oneOf
+                [ end
+                , Parser.chompIf (\c -> c == '\n')
+                ]
+        , succeed
+            (\gridElement ->
+                Loop <| Dict.union gridElement grid
+            )
+            |= parseGridChar
+        ]
+
+
+parseGridChar : Parser Grid
+parseGridChar =
+    succeed
+        (\position value ->
+            Dict.singleton position value
+        )
+        |= getPosition
+        |= getLetter
+
+
+getLetter : Parser Letter
+getLetter =
+    chompIf Char.isAlpha
+        |> getChompedString
+        |> andThen
+            (\c ->
+                case c of
+                    "X" ->
+                        succeed X
+
+                    "M" ->
+                        succeed M
+
+                    "A" ->
+                        succeed A
+
+                    "S" ->
+                        succeed S
+
+                    _ ->
+                        Parser.problem <| "Expected X, M, A or S. Got " ++ c ++ "."
+            )
+
+
+numberOfXmas : Grid -> Int
+numberOfXmas grid =
+    let
+        _ =
+            Debug.log "parsed data" grid
+    in
+    7
+
+
+numberOfXmas2 : List String -> Int
+numberOfXmas2 horizontalForwards =
     let
         numOfCharsPerRow =
             (List.head horizontalForwards |> Maybe.withDefault "")
@@ -131,4 +234,4 @@ numberOfXmas horizontalForwards =
                 (List.repeat numOfCharsPerRow [])
                 offSetRows
     in
-    List.length (Debug.log "verticalUpwards" diagonalTopToRight)
+    List.length diagonalTopToRight

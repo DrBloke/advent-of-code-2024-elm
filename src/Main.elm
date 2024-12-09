@@ -178,6 +178,7 @@ view model_ =
                     Parser.run (Types.parser model.pageConfig) model.inputData
                         |> Result.mapError deadEndsToString
 
+                -- |> Debug.log "parsed data"
                 accordion =
                     Accordion.view
                         [ { identifier = "description"
