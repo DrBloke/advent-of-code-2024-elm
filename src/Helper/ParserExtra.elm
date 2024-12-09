@@ -2,6 +2,7 @@ module Helper.ParserExtra exposing
     ( TwoColumnsOfInts
     , deadEndsToString
     , parseListOfListOfInt
+    , parseListOfStrings
     , parseTwoColumnsOfInts
     )
 
@@ -139,3 +140,30 @@ lineHelper ints =
             |= int
             |. chompWhile (\c -> c == ' ' || c == '\t')
         ]
+
+
+
+-- List of Strings - Beware, a line equal to "\n" returns "". Not obvious if at the end of the input.
+
+
+parseListOfStrings : Parser (List String)
+parseListOfStrings =
+    loop [] listOfStringsHelper
+
+
+listOfStringsHelper : List String -> Parser (Step (List String) (List String))
+listOfStringsHelper lines =
+    oneOf
+        [ succeed (\line -> Done (List.reverse (line :: lines)))
+            |= backtrackable parseLineOfStrings
+            |. end
+        , succeed (\line -> Loop (line :: lines))
+            |= parseLineOfStrings
+            |. chompIf (\c -> c == '\n')
+        ]
+
+
+parseLineOfStrings : Parser String
+parseLineOfStrings =
+    chompWhile Char.isAlpha
+        |> getChompedString
