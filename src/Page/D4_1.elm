@@ -101,48 +101,24 @@ type alias Grid =
 
 parseGrid : Parser Grid
 parseGrid =
-    loop Dict.empty parseGridRows
+    loop Dict.empty parseGridHelper
 
 
-parseGridRows : Grid -> Parser (Step Grid Grid)
-parseGridRows grid =
-    oneOf
-        [ succeed
-            (\gridElement ->
-                Done <| Dict.union gridElement grid
-            )
-            |= backtrackable parseGridRow
-            |. end
-        , succeed
-            (\gridElement ->
-                Loop <| Dict.union gridElement grid
-            )
-            |= parseGridRow
-        ]
-
-
-parseGridRow : Parser Grid
-parseGridRow =
-    loop Dict.empty parseGridRowHelper
-
-
-parseGridRowHelper : Grid -> Parser (Step Grid Grid)
-parseGridRowHelper grid =
+parseGridHelper : Grid -> Parser (Step Grid Grid)
+parseGridHelper grid =
     oneOf
         [ succeed
             (\gridElement ->
                 Done <| Dict.union gridElement grid
             )
             |= backtrackable parseGridChar
-            |. oneOf
-                [ end
-                , Parser.chompIf (\c -> c == '\n')
-                ]
+            |. end
         , succeed
             (\gridElement ->
                 Loop <| Dict.union gridElement grid
             )
             |= parseGridChar
+            |. chompWhile ((==) '\n')
         ]
 
 
