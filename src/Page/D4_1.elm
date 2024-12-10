@@ -3,10 +3,8 @@ module Page.D4_1 exposing (config)
 import Dict exposing (Dict)
 import Helper.ParserExtra as Parser
 import Helper.Render as Render
-import List.Extra as List
 import Parser as Parser exposing (..)
 import Types exposing (Config(..), Markdown)
-import Url.Parser exposing (parse)
 
 
 config : Config
@@ -184,54 +182,98 @@ getLetter =
 
 numberOfXmas : Grid -> Int
 numberOfXmas grid =
+    -- let
+    --     _ =
+    --         Debug.log "parsed data" grid
+    -- in
+    Dict.foldl
+        (\( x, y ) _ acc ->
+            xmasSumHere grid ( x, y ) + acc
+        )
+        0
+        grid
+
+
+xmasSumHere : Grid -> ( Int, Int ) -> Int
+xmasSumHere grid ( x, y ) =
     let
-        _ =
-            Debug.log "parsed data" grid
+        xmasSum =
+            \a b c d ->
+                if a == X && b == M && c == A && d == S then
+                    1
+
+                else
+                    0
+
+        right =
+            Maybe.map4 xmasSum
+                (Dict.get ( x, y ) grid)
+                (Dict.get ( x + 1, y ) grid)
+                (Dict.get ( x + 2, y ) grid)
+                (Dict.get ( x + 3, y ) grid)
+                |> Maybe.withDefault 0
+
+        left =
+            Maybe.map4 xmasSum
+                (Dict.get ( x, y ) grid)
+                (Dict.get ( x - 1, y ) grid)
+                (Dict.get ( x - 2, y ) grid)
+                (Dict.get ( x - 3, y ) grid)
+                |> Maybe.withDefault 0
+
+        down =
+            Maybe.map4 xmasSum
+                (Dict.get ( x, y ) grid)
+                (Dict.get ( x, y + 1 ) grid)
+                (Dict.get ( x, y + 2 ) grid)
+                (Dict.get ( x, y + 3 ) grid)
+                |> Maybe.withDefault 0
+
+        up =
+            Maybe.map4 xmasSum
+                (Dict.get ( x, y ) grid)
+                (Dict.get ( x, y - 1 ) grid)
+                (Dict.get ( x, y - 2 ) grid)
+                (Dict.get ( x, y - 3 ) grid)
+                |> Maybe.withDefault 0
+
+        downRight =
+            Maybe.map4 xmasSum
+                (Dict.get ( x, y ) grid)
+                (Dict.get ( x + 1, y + 1 ) grid)
+                (Dict.get ( x + 2, y + 2 ) grid)
+                (Dict.get ( x + 3, y + 3 ) grid)
+                |> Maybe.withDefault 0
+
+        upLeft =
+            Maybe.map4 xmasSum
+                (Dict.get ( x, y ) grid)
+                (Dict.get ( x - 1, y - 1 ) grid)
+                (Dict.get ( x - 2, y - 2 ) grid)
+                (Dict.get ( x - 3, y - 3 ) grid)
+                |> Maybe.withDefault 0
+
+        downLeft =
+            Maybe.map4 xmasSum
+                (Dict.get ( x, y ) grid)
+                (Dict.get ( x - 1, y + 1 ) grid)
+                (Dict.get ( x - 2, y + 2 ) grid)
+                (Dict.get ( x - 3, y + 3 ) grid)
+                |> Maybe.withDefault 0
+
+        upRight =
+            Maybe.map4 xmasSum
+                (Dict.get ( x, y ) grid)
+                (Dict.get ( x + 1, y - 1 ) grid)
+                (Dict.get ( x + 2, y - 2 ) grid)
+                (Dict.get ( x + 3, y - 3 ) grid)
+                |> Maybe.withDefault 0
     in
-    7
-
-
-numberOfXmas2 : List String -> Int
-numberOfXmas2 horizontalForwards =
-    let
-        numOfCharsPerRow =
-            (List.head horizontalForwards |> Maybe.withDefault "")
-                |> String.length
-
-        horizontalBackwards =
-            List.map String.reverse horizontalForwards
-
-        verticalUpwards =
-            List.foldl
-                (\row acc ->
-                    List.zip (String.toList row) acc
-                        |> List.map (\( head, rest ) -> head :: rest)
-                )
-                (List.repeat numOfCharsPerRow [])
-                horizontalForwards
-                |> List.map String.fromList
-
-        verticalDownwards =
-            List.map String.reverse verticalUpwards
-
-        rowsAsChars =
-            List.map String.toList horizontalForwards
-
-        offSetRows =
-            List.indexedFoldl
-                (\index row acc ->
-                    (List.repeat index "" ++ List.drop index (List.map String.fromChar row)) :: acc
-                )
-                []
-                rowsAsChars
-
-        diagonalTopToRight =
-            List.foldl
-                (\row acc ->
-                    List.zip row acc
-                        |> List.map (\( head, rest ) -> head :: rest)
-                )
-                (List.repeat numOfCharsPerRow [])
-                offSetRows
-    in
-    List.length diagonalTopToRight
+    right
+        + left
+        + down
+        + up
+        + downRight
+        + upLeft
+        + downLeft
+        + upRight
