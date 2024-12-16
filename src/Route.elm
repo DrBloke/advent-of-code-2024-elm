@@ -1,6 +1,7 @@
 module Route exposing (..)
 
 import Maybe.Extra as Maybe
+import Page.D13_1 as D13_1
 import Page.D1_1 as D1_1
 import Page.D1_2 as D1_2
 import Page.D2_1 as D2_1
@@ -30,6 +31,7 @@ allConfigs =
     , D3_2.config
     , D4_1.config
     , D4_2.config
+    , D13_1.config
     ]
 
 
